@@ -107,10 +107,6 @@
                      <content>
                         <AnchorPane />
                      </content></Tab>
-                <Tab text="Shiny Counter">
-                     <content>
-                        <AnchorPane />
-                     </content></Tab>
                   <Tab text="Team Builder">
                      <content>
                         <AnchorPane />
