@@ -2,6 +2,11 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Menu?>
@@ -10,6 +15,7 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
@@ -18,7 +24,7 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 
-<VBox xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.fhtw.dexio.DexIOController">
+<VBox prefWidth="800.0" xmlns="http://javafx.com/javafx/22.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.fhtw.dexio.DexIOController">
    <children>
       <MenuBar>
         <menus>
@@ -111,7 +117,180 @@
                      </content></Tab>
                 <Tab text="Shiny Counter">
                      <content>
-                        <AnchorPane />
+                        <AnchorPane>
+                           <children>
+                              <HBox prefHeight="100.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <AnchorPane HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <VBox alignment="TOP_CENTER" minWidth="180.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                             <children>
+                                                <ImageView fx:id="shinyTargetImage" fitHeight="180.0" fitWidth="180.0" pickOnBounds="true" preserveRatio="true">
+                                                   <VBox.margin>
+                                                      <Insets bottom="20.0" top="20.0" />
+                                                   </VBox.margin>
+                                                </ImageView>
+                                                <HBox alignment="CENTER" minHeight="80.0">
+                                                   <children>
+                                                      <Button fx:id="shinyCountDownBtn" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" onAction="#onShinyCountDownBtnPress" prefHeight="40.0" prefWidth="40.0" text="v">
+                                                         <HBox.margin>
+                                                            <Insets right="20.0" />
+                                                         </HBox.margin>
+                                                         <font>
+                                                            <Font name="System Bold" size="32.0" />
+                                                         </font>
+                                                         <padding>
+                                                            <Insets bottom="-5.0" left="-5.0" right="-5.0" top="-5.0" />
+                                                         </padding>
+                                                      </Button>
+                                                      <TextField fx:id="shinyCountText" alignment="CENTER" style="-fx-border-color: #f4f4f4; -fx-background-color: #f4f4f4;" text="0">
+                                                         <font>
+                                                            <Font name="System Bold" size="22.0" />
+                                                         </font>
+                                                      </TextField>
+                                                      <Button fx:id="shinyCountUpBtn" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" onAction="#onShinyCountUpBtnPress" prefHeight="40.0" prefWidth="40.0" text="^">
+                                                         <HBox.margin>
+                                                            <Insets left="20.0" />
+                                                         </HBox.margin>
+                                                         <font>
+                                                            <Font name="System Bold" size="40.0" />
+                                                         </font>
+                                                         <padding>
+                                                            <Insets bottom="-100.0" left="-100.0" right="-100.0" top="-85.0" />
+                                                         </padding>
+                                                      </Button>
+                                                   </children>
+                                                   <VBox.margin>
+                                                      <Insets bottom="20.0" left="40.0" right="40.0" />
+                                                   </VBox.margin>
+                                                </HBox>
+                                                <HBox>
+                                                   <children>
+                                                      <Label alignment="CENTER_RIGHT" prefWidth="120.0" text="P(at least one): ">
+                                                         <font>
+                                                            <Font size="17.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextFlow HBox.hgrow="ALWAYS">
+                                                         <children>
+                                                            <Text fx:id="shinyProbabilityText" fill="#333333" strokeType="OUTSIDE" strokeWidth="0.0" text="0.00%">
+                                                               <font>
+                                                                  <Font size="18.0" />
+                                                               </font>
+                                                            </Text>
+                                                         </children>
+                                                         <padding>
+                                                            <Insets top="1.0" />
+                                                         </padding>
+                                                      </TextFlow>
+                                                   </children>
+                                                   <VBox.margin>
+                                                      <Insets left="40.0" right="40.0" />
+                                                   </VBox.margin>
+                                                </HBox>
+                                                <HBox>
+                                                   <children>
+                                                      <Label alignment="CENTER_RIGHT" prefWidth="120.0" text="Time: ">
+                                                         <font>
+                                                            <Font size="17.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextFlow HBox.hgrow="ALWAYS">
+                                                         <children>
+                                                            <Text fx:id="shinyTimeText" fill="#333333" strokeType="OUTSIDE" strokeWidth="0.0" text="0 Days">
+                                                               <font>
+                                                                  <Font size="18.0" />
+                                                               </font>
+                                                            </Text>
+                                                         </children>
+                                                         <padding>
+                                                            <Insets top="1.0" />
+                                                         </padding>
+                                                      </TextFlow>
+                                                   </children>
+                                                   <VBox.margin>
+                                                      <Insets left="40.0" right="40.0" />
+                                                   </VBox.margin>
+                                                </HBox>
+                                             </children>
+                                          </VBox>
+                                          <Button fx:id="shinyOptBtn" mnemonicParsing="false" onAction="#onShinyOptBtnClick" text="x" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0">
+                                             <font>
+                                                <Font name="System Bold" size="15.0" />
+                                             </font>
+                                          </Button>
+                                       </children>
+                                    </AnchorPane>
+                                    <Separator orientation="VERTICAL" prefHeight="200.0" />
+                                    <AnchorPane fx:id="shinyOptPane" minWidth="0.0">
+                                       <children>
+                                          <VBox alignment="TOP_CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <children>
+                                                <TextFlow textAlignment="CENTER">
+                                                   <children>
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Options">
+                                                         <font>
+                                                            <Font size="32.0" />
+                                                         </font>
+                                                      </Text>
+                                                   </children>
+                                                   <padding>
+                                                      <Insets bottom="10.0" top="10.0" />
+                                                   </padding>
+                                                </TextFlow>
+                                                <Label text="Target Pokémon">
+                                                   <font>
+                                                      <Font size="17.0" />
+                                                   </font>
+                                                </Label>
+                                                <ComboBox fx:id="shinyTargetSelector" editable="true" visibleRowCount="9">
+                                                   <VBox.margin>
+                                                      <Insets bottom="20.0" />
+                                                   </VBox.margin></ComboBox>
+                                                <Label text="Starting Date">
+                                                   <font>
+                                                      <Font size="17.0" />
+                                                   </font>
+                                                </Label>
+                                                <DatePicker fx:id="shinyStartDate" editable="false">
+                                                   <VBox.margin>
+                                                      <Insets bottom="20.0" />
+                                                   </VBox.margin>
+                                                </DatePicker>
+                                                <Label text="Shiny Charm">
+                                                   <font>
+                                                      <Font size="17.0" />
+                                                   </font>
+                                                </Label>
+                                                <CheckBox fx:id="shinyCharmCheckbox" mnemonicParsing="false">
+                                                   <font>
+                                                      <Font size="17.0" />
+                                                   </font>
+                                                   <VBox.margin>
+                                                      <Insets bottom="20.0" />
+                                                   </VBox.margin>
+                                                </CheckBox>
+                                                <Label text="Generation">
+                                                   <font>
+                                                      <Font size="17.0" />
+                                                   </font>
+                                                </Label>
+                                                <ChoiceBox fx:id="shinyGenerationChoice" prefWidth="180.0">
+                                                   <VBox.margin>
+                                                      <Insets bottom="40.0" />
+                                                   </VBox.margin></ChoiceBox>
+                                                <Button fx:id="shinyResetBtn" mnemonicParsing="false" onAction="#onShinyResetBtnPress" prefWidth="75.0" text="Reset" textFill="DARKRED">
+                                                   <VBox.margin>
+                                                      <Insets bottom="20.0" />
+                                                   </VBox.margin>
+                                                </Button>
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </AnchorPane>
+                                 </children>
+                              </HBox>
+                           </children></AnchorPane>
                      </content></Tab>
                   <Tab text="Team Builder">
                      <content>
