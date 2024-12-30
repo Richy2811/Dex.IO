@@ -2,7 +2,6 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.ComboBox?>
@@ -12,6 +11,7 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
@@ -103,7 +103,7 @@
                                                 </TextFlow>
                                                 <AnchorPane prefHeight="61.0" prefWidth="300.0">
                                                    <children>
-                                                       <Button id="exportButton" prefHeight="25.0" prefWidth="114.0" text="Export as JSON" onAction="#handleExport" AnchorPane.bottomAnchor="20" AnchorPane.rightAnchor="20" />
+                                                       <Button id="exportButton" onAction="#handleExport" prefHeight="25.0" prefWidth="114.0" text="Export as JSON" AnchorPane.bottomAnchor="20" AnchorPane.rightAnchor="20" />
                                                    </children>
                                                 </AnchorPane>
                                              </children>
@@ -298,7 +298,196 @@
                      </content></Tab>
                   <Tab text="Pokémon Types">
                      <content>
-                        <AnchorPane />
+                        <AnchorPane>
+                           <children>
+                              <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <HBox alignment="CENTER">
+                                       <children>
+                                          <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                                             <children>
+                                                <Label text="Primary Type">
+                                                   <font>
+                                                      <Font name="System Bold Italic" size="22.0" />
+                                                   </font></Label>
+                                                <ComboBox fx:id="primaryType" prefWidth="150.0" visibleRowCount="20" />
+                                             </children>
+                                             <HBox.margin>
+                                                <Insets />
+                                             </HBox.margin>
+                                          </VBox>
+                                          <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                                             <children>
+                                                <Label text="Secondary Type">
+                                                   <font>
+                                                      <Font name="System Bold Italic" size="22.0" />
+                                                   </font></Label>
+                                                <ComboBox fx:id="secondaryType" prefWidth="150.0" visibleRowCount="20" />
+                                             </children>
+                                             <HBox.margin>
+                                                <Insets />
+                                             </HBox.margin>
+                                          </VBox>
+                                       </children>
+                                       <VBox.margin>
+                                          <Insets bottom="20.0" top="20.0" />
+                                       </VBox.margin>
+                                    </HBox>
+                                    <Separator prefWidth="200.0" />
+                                    <HBox VBox.vgrow="ALWAYS">
+                                       <children>
+                                          <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true" HBox.hgrow="ALWAYS">
+                                             <content>
+                                                <VBox alignment="CENTER_LEFT">
+                                                   <padding>
+                                                      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                                   </padding>
+                                                   <children>
+                                                      <TextFlow prefHeight="55.0">
+                                                         <children>
+                                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Damage Taken">
+                                                               <font>
+                                                                  <Font name="System Bold Italic" size="20.0" />
+                                                               </font>
+                                                            </Text>
+                                                         </children>
+                                                      </TextFlow>
+                                                      <Separator />
+                                                      <Separator layoutX="30.0" layoutY="109.0" />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Weaknesses">
+                                                         <font>
+                                                            <Font name="System Italic" size="18.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <VBox fx:id="dmgTakenWeakVBox" VBox.vgrow="ALWAYS" />
+                                                      <Separator />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Resistances">
+                                                         <font>
+                                                            <Font name="System Italic" size="18.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <VBox fx:id="dmgTakenResistVBox" VBox.vgrow="ALWAYS" />
+                                                      <Separator />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Immunities">
+                                                         <font>
+                                                            <Font name="System Italic" size="18.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <VBox fx:id="dmgTakenImmuneVBox" VBox.vgrow="ALWAYS" />
+                                                      <Separator layoutX="30.0" layoutY="213.0" />
+                                                      <Text layoutX="30.0" layoutY="234.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Neutral">
+                                                         <font>
+                                                            <Font name="System Italic" size="18.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <VBox fx:id="dmgTakenNeutralVBox" layoutX="30.0" layoutY="239.0" VBox.vgrow="ALWAYS" />
+                                                   </children>
+                                                </VBox>
+                                             </content>
+                                          </ScrollPane>
+                                          <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true" HBox.hgrow="ALWAYS">
+                                             <content>
+                                                <VBox alignment="CENTER_LEFT">
+                                                   <padding>
+                                                      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                                   </padding>
+                                                   <children>
+                                                      <TextFlow prefHeight="55.0" prefWidth="150.0">
+                                                         <children>
+                                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Damage Dealt (Primary)">
+                                                               <font>
+                                                                  <Font name="System Bold Italic" size="20.0" />
+                                                               </font>
+                                                            </Text>
+                                                         </children>
+                                                      </TextFlow>
+                                                      <Separator />
+                                                      <Separator />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Super-effective">
+                                                         <font>
+                                                            <Font name="System Italic" size="18.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <VBox fx:id="dmgDealtPrimSuperEffectiveVBox" VBox.vgrow="ALWAYS" />
+                                                      <Separator />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Not very effective">
+                                                         <font>
+                                                            <Font name="System Italic" size="18.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <VBox fx:id="dmgDealtPrimNotEffectiveVBox" VBox.vgrow="ALWAYS" />
+                                                      <Separator />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="No effect">
+                                                         <font>
+                                                            <Font name="System Italic" size="18.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <VBox fx:id="dmgDealtPrimNoEffectVBox" VBox.vgrow="ALWAYS" />
+                                                      <Separator layoutX="30.0" layoutY="212.0" />
+                                                      <Text layoutX="30.0" layoutY="235.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Neutral">
+                                                         <font>
+                                                            <Font name="System Italic" size="18.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <VBox fx:id="dmgDealtPrimNeutralVBox" layoutX="30.0" layoutY="240.0" VBox.vgrow="ALWAYS" />
+                                                   </children>
+                                                </VBox>
+                                             </content>
+                                          </ScrollPane>
+                                          <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true" HBox.hgrow="ALWAYS">
+                                             <content>
+                                                <VBox alignment="CENTER_LEFT">
+                                                   <padding>
+                                                      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                                   </padding>
+                                                   <children>
+                                                      <TextFlow prefHeight="55.0" prefWidth="150.0">
+                                                         <children>
+                                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Damage Dealt (Secondary)">
+                                                               <font>
+                                                                  <Font name="System Bold Italic" size="20.0" />
+                                                               </font>
+                                                            </Text>
+                                                         </children>
+                                                      </TextFlow>
+                                                      <Separator />
+                                                      <Separator />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Super-effective">
+                                                         <font>
+                                                            <Font name="System Italic" size="18.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <VBox fx:id="dmgDealtSecSuperEffectiveVBox" VBox.vgrow="ALWAYS" />
+                                                      <Separator />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Not very effective">
+                                                         <font>
+                                                            <Font name="System Italic" size="18.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <VBox fx:id="dmgDealtSecNotEffectiveVBox" VBox.vgrow="ALWAYS" />
+                                                      <Separator />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="No effect">
+                                                         <font>
+                                                            <Font name="System Italic" size="18.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <VBox fx:id="dmgDealtSecNoEffectVBox" VBox.vgrow="ALWAYS" />
+                                                      <Separator layoutX="30.0" layoutY="212.0" />
+                                                      <Text layoutX="30.0" layoutY="235.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Neutral">
+                                                         <font>
+                                                            <Font name="System Italic" size="18.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <VBox fx:id="dmgDealtSecNeutralVBox" layoutX="30.0" layoutY="240.0" VBox.vgrow="ALWAYS" />
+                                                   </children>
+                                                </VBox>
+                                             </content>
+                                          </ScrollPane>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+                           </children></AnchorPane>
                      </content></Tab>
                   <Tab text="Damage Calculator">
                      <content>
