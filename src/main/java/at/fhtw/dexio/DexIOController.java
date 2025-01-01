@@ -9,16 +9,12 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.ComboBoxListCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 import java.time.LocalDate;
@@ -135,8 +131,10 @@ public class DexIOController {
 
     //map object containing all Pokémon types as a key-value pair of type name and TypeDTO (used for getting type by name)
     private Map<String, TypeDTO> pokemonTypeMap;
+
     //list object containing all types as TypeDTO (used for getting types by index)
     private List<TypeDTO> pokemonTypeList;
+
     //table containing all damage relations for [attack type] -> [defending Pokémon type] (e.g. the electric type with index 12 will have a damage multiplier of 2 against water type with index 10, therefore damageRelations[12][10] = 2)
     private final List<List<Float>> damageRelations = new ArrayList<>();
 
@@ -146,7 +144,8 @@ public class DexIOController {
     private final PokemonInfoService pokemonInfoService = new PokemonInfoService();
     private final PokemonSpeciesService pokemonSpeciesService = new PokemonSpeciesService();
     private final ShinyTrackerService shinyTrackerService = new ShinyTrackerService();
-    private final TypeService typeService = new TypeService();
+    private final TypeAPIService typeApiService = new TypeAPIService();
+    private final TypeUIService typeUiService = new TypeUIService();
 
 
     //Placeholder sprite for loading images
@@ -372,7 +371,7 @@ public class DexIOController {
         //------------------------------------------Pokémon Types------------------------------------------
         //-------------------------------------------------------------------------------------------------
         //add listener for loading basic types into the combobox
-        typeService.valueProperty().addListener((observableTypes, oldTypeEntries, newTypeEntries) -> {
+        typeApiService.valueProperty().addListener((observableTypes, oldTypeEntries, newTypeEntries) -> {
             //fill type map and list (first type is a "None" type mapped to null)
             pokemonTypeMap = newTypeEntries;
             pokemonTypeList = new ArrayList<>(newTypeEntries.values());
@@ -421,9 +420,35 @@ public class DexIOController {
             });
         });
 
+        //add listener for generating Pokémon type UI elements
+        typeUiService.valueProperty().addListener((observableTypes, oldTypeCollection, newTypeCollection) -> {
+            if(newTypeCollection == null){
+                return;
+            }
+
+            //each entry contains type containers for each of the UI fields (type weaknesses, resistances, type effectiveness, etc.)
+            dmgTakenWeakVBox.getChildren().addAll(newTypeCollection.get(0));
+            dmgTakenResistVBox.getChildren().addAll(newTypeCollection.get(1));
+            dmgTakenImmuneVBox.getChildren().addAll(newTypeCollection.get(2));
+            dmgTakenNeutralVBox.getChildren().addAll(newTypeCollection.get(3));
+
+            if(primaryType.getSelectionModel().getSelectedItem() != null){
+                dmgDealtPrimSuperEffectiveVBox.getChildren().addAll(newTypeCollection.get(4));
+                dmgDealtPrimNotEffectiveVBox.getChildren().addAll(newTypeCollection.get(5));
+                dmgDealtPrimNoEffectVBox.getChildren().addAll(newTypeCollection.get(6));
+                dmgDealtPrimNeutralVBox.getChildren().addAll(newTypeCollection.get(7));
+            }
+            if(secondaryType.getSelectionModel().getSelectedItem() != null){
+                dmgDealtSecSuperEffectiveVBox.getChildren().addAll(newTypeCollection.get(8));
+                dmgDealtSecNotEffectiveVBox.getChildren().addAll(newTypeCollection.get(9));
+                dmgDealtSecNoEffectVBox.getChildren().addAll(newTypeCollection.get(10));
+                dmgDealtSecNeutralVBox.getChildren().addAll(newTypeCollection.get(11));
+            }
+        });
+
         //start service for loading types
-        typeService.setTypeURL("https://pokeapi.co/api/v2/type/?limit=18");
-        typeService.restart();
+        typeApiService.setTypeURL("https://pokeapi.co/api/v2/type/?limit=18");
+        typeApiService.start();
     }
 
     @FXML
@@ -506,128 +531,45 @@ public class DexIOController {
         FileIO.exportToDesktop(fileName, selectedPokemon);
     }
 
-    private Region buildTypeGuiContainer(Integer typeIndex, Float multiplier){
-        //since the type list contains a null type at the beginning, the type index must be offset by 1
-        typeIndex++;
-        Image typeImage = new Image(pokemonTypeList.get(typeIndex).getSprites().getGeneration_ix_type_sprites().getScarlet_violet_type_sprite().getName_icon());
-        ImageView typeImageView = new ImageView(typeImage);
-
-        HBox typeContainer = new HBox(typeImageView);
-        typeImageView.setPreserveRatio(true);
-        typeContainer.setAlignment(Pos.CENTER_LEFT);
-        HBox.setMargin(typeImageView, new Insets(5));
-
-        Text multiplierText = new Text((multiplier % 1.0 == 0) ? String.format("x%.0f", multiplier) : String.format("x%s", multiplier));
-        multiplierText.setFont(Font.font(Font.getDefault().getFamily(), FontWeight.BOLD, 15));
-        typeContainer.getChildren().add(multiplierText);
-
-        return typeContainer;
-    }
-
-    private void damageTakenHandler(int attackTypeIndex, float multiplier) {
-        Region typeContainer = buildTypeGuiContainer(attackTypeIndex, multiplier);
-
-        if(multiplier > 1){
-            dmgTakenWeakVBox.getChildren().add(typeContainer);
-        }
-        else if(multiplier < 1 && multiplier > 0){
-            dmgTakenResistVBox.getChildren().add(typeContainer);
-        }
-        else if(multiplier == 0){
-            dmgTakenImmuneVBox.getChildren().add(typeContainer);
-        }
-        else {
-            dmgTakenNeutralVBox.getChildren().add(typeContainer);
-        }
-    }
-
-    private void damageGivenHandler(){
-        Region typeContainer;
-        Float multiplier;
-
-        if(primaryType.getSelectionModel().getSelectedItem() != null){
-            //fetch sublist containing attack multipliers for the currently chosen primary type
-            List<Float> primAttackMultipliers = damageRelations.get(primaryType.getSelectionModel().getSelectedItem().getId() - 1);
-            for(int i = 0; i < primAttackMultipliers.size(); i++){
-                multiplier = primAttackMultipliers.get(i);
-
-                if(multiplier > 1){
-                    typeContainer = buildTypeGuiContainer(i, multiplier);
-                    dmgDealtPrimSuperEffectiveVBox.getChildren().add(typeContainer);
-                }
-                else if(multiplier < 1 && multiplier > 0){
-                    typeContainer = buildTypeGuiContainer(i, multiplier);
-                    dmgDealtPrimNotEffectiveVBox.getChildren().add(typeContainer);
-                }
-                else if(multiplier == 0){
-                    typeContainer = buildTypeGuiContainer(i, multiplier);
-                    dmgDealtPrimNoEffectVBox.getChildren().add(typeContainer);
-                }
-                else {
-                    typeContainer = buildTypeGuiContainer(i, multiplier);
-                    dmgDealtPrimNeutralVBox.getChildren().add(typeContainer);
-                }
-            }
-        }
-
-        if(secondaryType.getSelectionModel().getSelectedItem() != null){
-            //fetch sublist containing attack multipliers for the currently chosen secondary type
-            List<Float> secAttackMultipliers = damageRelations.get(secondaryType.getSelectionModel().getSelectedItem().getId() - 1);
-            for(int i = 0; i < secAttackMultipliers.size(); i++){
-                multiplier = secAttackMultipliers.get(i);
-
-                if(multiplier > 1){
-                    typeContainer = buildTypeGuiContainer(i, multiplier);
-                    dmgDealtSecSuperEffectiveVBox.getChildren().add(typeContainer);
-                }
-                else if(multiplier < 1 && multiplier > 0){
-                    typeContainer = buildTypeGuiContainer(i, multiplier);
-                    dmgDealtSecNotEffectiveVBox.getChildren().add(typeContainer);
-                }
-                else if(multiplier == 0){
-                    typeContainer = buildTypeGuiContainer(i, multiplier);
-                    dmgDealtSecNoEffectVBox.getChildren().add(typeContainer);
-                }
-                else {
-                    typeContainer = buildTypeGuiContainer(i, multiplier);
-                    dmgDealtSecNeutralVBox.getChildren().add(typeContainer);
-                }
-            }
-        }
-    }
-
     private void typeSelectionHandler(TypeDTO primaryTypeSelect, TypeDTO secondaryTypeSelect) {
+        //cancel any currently running service
+        typeUiService.cancel();
+
         //deselect current type if it matches the type in the primary ComboBox (unless no primary or secondary type is selected)
         if((primaryTypeSelect != null || secondaryTypeSelect != null) && primaryTypeSelect == secondaryTypeSelect){
             primaryType.getSelectionModel().clearSelection();
             return;
         }
 
-        //disable the option to choose the same type in the secondary ComboBox as in the primary selection
-        secondaryType.setCellFactory(param -> new ComboBoxListCell<>() {
-            @Override
-            public void updateItem(TypeDTO item, boolean empty) {
-                super.updateItem(item, empty);
-                //disable node in secondary selection if equal to current selection to prevent selecting the same type twice
-                if(!empty && (item == primaryTypeSelect)){
-                    setDisable(true);
-                    setBackground(Background.fill(Color.GREY));
+        if(primaryTypeSelect != null){
+            //disable the option to choose the same type in the secondary ComboBox as in the primary selection
+            secondaryType.setCellFactory(param -> new ComboBoxListCell<>() {
+                @Override
+                public void updateItem(TypeDTO item, boolean empty) {
+                    super.updateItem(item, empty);
+                    //disable node in secondary selection if equal to current selection to prevent selecting the same type twice
+                    if(!empty && (item == primaryTypeSelect)){
+                        setDisable(true);
+                        setBackground(Background.fill(Color.GREY));
+                    }
                 }
-            }
-        });
+            });
+        }
 
-        //disable the option to choose the same type in the primary ComboBox as in the secondary selection
-        primaryType.setCellFactory(param -> new ComboBoxListCell<>() {
-            @Override
-            public void updateItem(TypeDTO item, boolean empty) {
-                super.updateItem(item, empty);
-                //disable node in primary selection if equal to current selection to prevent selecting the same type twice
-                if(!empty && (item == secondaryTypeSelect)){
-                    setDisable(true);
-                    setBackground(Background.fill(Color.GREY));
+        if(secondaryTypeSelect != null){
+            //disable the option to choose the same type in the primary ComboBox as in the secondary selection
+            primaryType.setCellFactory(param -> new ComboBoxListCell<>() {
+                @Override
+                public void updateItem(TypeDTO item, boolean empty) {
+                    super.updateItem(item, empty);
+                    //disable node in primary selection if equal to current selection to prevent selecting the same type twice
+                    if(!empty && (item == secondaryTypeSelect)){
+                        setDisable(true);
+                        setBackground(Background.fill(Color.GREY));
+                    }
                 }
-            }
-        });
+            });
+        }
 
         //clear current damage relations before rebuilding them
         dmgTakenWeakVBox.getChildren().clear();
@@ -645,36 +587,7 @@ public class DexIOController {
         dmgDealtSecNoEffectVBox.getChildren().clear();
         dmgDealtSecNeutralVBox.getChildren().clear();
 
-        //start handler which updates damage effectiveness in GUI for primary and secondary type
-        damageGivenHandler();
-
-        if(primaryTypeSelect != null && secondaryTypeSelect != null){
-            //both primary and secondary type are selected
-            //iterate through damage table and add type weaknesses, resistances, and immunities to the corresponding part in the GUI
-            for(int i = 0; i < damageRelations.size(); i++){
-                float multiplier = damageRelations.get(i).get(primaryTypeSelect.getId() - 1) * damageRelations.get(i).get(secondaryTypeSelect.getId() - 1);
-                damageTakenHandler(i, multiplier);
-            }
-        }
-        else if(primaryTypeSelect != null){
-            //only primary type is currently selected
-            //iterate through damage table and add type weaknesses, resistances, and immunities to the corresponding part in the GUI
-            for(int i = 0; i < damageRelations.size(); i++){
-                float multiplier = damageRelations.get(i).get(primaryTypeSelect.getId() - 1);
-                damageTakenHandler(i, multiplier);
-            }
-        }
-        else if(secondaryTypeSelect != null){
-            //only secondary type is currently selected
-            //iterate through damage table and add type weaknesses, resistances, and immunities to the corresponding part in the GUI
-            for(int i = 0; i < damageRelations.size(); i++){
-                float multiplier = damageRelations.get(i).get(secondaryTypeSelect.getId() - 1);
-                damageTakenHandler(i, multiplier);
-            }
-        }
-        //if no condition applies, no type is selected
+        typeUiService.setParams(pokemonTypeList, damageRelations, primaryTypeSelect, secondaryTypeSelect);
+        typeUiService.restart();
     }
 }
-
-
-

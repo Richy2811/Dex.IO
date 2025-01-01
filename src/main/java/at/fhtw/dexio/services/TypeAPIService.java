@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
-public class TypeService extends Service<Map<String, TypeDTO>> {
+public class TypeAPIService extends Service<Map<String, TypeDTO>> {
     //json mapper for deserialisation of TypeDexDTO object
     private final ObjectMapper jsonMapper = JsonMapper.builder()
             .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
