@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
@@ -17,27 +24,27 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 
-<VBox xmlns="http://javafx.com/javafx/22.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.fhtw.dexio.DexIOController">
+<VBox prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.fhtw.dexio.DexIOController">
    <children>
       <MenuBar>
-        <menus>
-          <Menu mnemonicParsing="false" text="File">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Close" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Help">
-            <items>
-              <MenuItem mnemonicParsing="false" text="About" />
-            </items>
-          </Menu>
-        </menus>
+         <menus>
+            <Menu mnemonicParsing="false" text="File">
+               <items>
+                  <MenuItem mnemonicParsing="false" text="Close" />
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Help">
+               <items>
+                  <MenuItem mnemonicParsing="false" text="About" />
+               </items>
+            </Menu>
+         </menus>
       </MenuBar>
       <HBox VBox.vgrow="ALWAYS">
          <children>
             <TabPane tabClosingPolicy="UNAVAILABLE" HBox.hgrow="ALWAYS">
-              <tabs>
-                <Tab text="Pokédex">
+               <tabs>
+                  <Tab text="Pokédex">
                      <content>
                         <AnchorPane>
                            <children>
@@ -94,6 +101,12 @@
                                                       <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                                    </VBox.margin>
                                                 </TextFlow>
+                                                <AnchorPane prefHeight="61.0" prefWidth="300.0">
+                                                   <children>
+                                                      <Button id="exportButton" onAction="#handleExport" prefHeight="25.0" prefWidth="114.0" text="Export as JSON" AnchorPane.bottomAnchor="20" AnchorPane.rightAnchor="20" />
+                                                      <Button id="addremoveButton" fx:id="addOrRemoveTeamMemberButton" onAction="#onTeamMemberAddOrRemoveBtnPress" prefHeight="25.0" prefWidth="140.0" text="Add to team" AnchorPane.bottomAnchor="20" AnchorPane.rightAnchor="160" />
+                                                   </children>
+                                                </AnchorPane>
                                              </children>
                                           </VBox>
                                        </children>
@@ -103,23 +116,424 @@
                            </children>
                         </AnchorPane>
                      </content></Tab>
-                <Tab text="Shiny Counter">
+                  <Tab text="Shiny Counter">
                      <content>
-                        <AnchorPane />
+                        <AnchorPane>
+                           <children>
+                              <HBox prefHeight="100.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <AnchorPane HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <VBox alignment="TOP_CENTER" minWidth="180.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                             <children>
+                                                <ImageView fx:id="shinyTargetImage" fitHeight="180.0" fitWidth="180.0" pickOnBounds="true" preserveRatio="true">
+                                                   <VBox.margin>
+                                                      <Insets bottom="20.0" top="20.0" />
+                                                   </VBox.margin>
+                                                </ImageView>
+                                                <HBox alignment="CENTER" minHeight="80.0">
+                                                   <children>
+                                                      <Button fx:id="shinyCountDownBtn" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" onAction="#onShinyCountDownBtnPress" prefHeight="40.0" prefWidth="40.0" text="v">
+                                                         <HBox.margin>
+                                                            <Insets right="20.0" />
+                                                         </HBox.margin>
+                                                         <font>
+                                                            <Font name="System Bold" size="32.0" />
+                                                         </font>
+                                                         <padding>
+                                                            <Insets bottom="-5.0" left="-5.0" right="-5.0" top="-5.0" />
+                                                         </padding>
+                                                      </Button>
+                                                      <TextField fx:id="shinyCountText" alignment="CENTER" style="-fx-border-color: #f4f4f4; -fx-background-color: #f4f4f4;" text="0">
+                                                         <font>
+                                                            <Font name="System Bold" size="22.0" />
+                                                         </font>
+                                                      </TextField>
+                                                      <Button fx:id="shinyCountUpBtn" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" onAction="#onShinyCountUpBtnPress" prefHeight="40.0" prefWidth="40.0" text="^">
+                                                         <HBox.margin>
+                                                            <Insets left="20.0" />
+                                                         </HBox.margin>
+                                                         <font>
+                                                            <Font name="System Bold" size="40.0" />
+                                                         </font>
+                                                         <padding>
+                                                            <Insets bottom="-100.0" left="-100.0" right="-100.0" top="-85.0" />
+                                                         </padding>
+                                                      </Button>
+                                                   </children>
+                                                   <VBox.margin>
+                                                      <Insets bottom="20.0" left="40.0" right="40.0" />
+                                                   </VBox.margin>
+                                                </HBox>
+                                                <HBox>
+                                                   <children>
+                                                      <Label alignment="CENTER_RIGHT" prefWidth="120.0" text="P(at least one): ">
+                                                         <font>
+                                                            <Font size="17.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextFlow HBox.hgrow="ALWAYS">
+                                                         <children>
+                                                            <Text fx:id="shinyProbabilityText" fill="#333333" strokeType="OUTSIDE" strokeWidth="0.0" text="0.00%">
+                                                               <font>
+                                                                  <Font size="18.0" />
+                                                               </font>
+                                                            </Text>
+                                                         </children>
+                                                         <padding>
+                                                            <Insets top="1.0" />
+                                                         </padding>
+                                                      </TextFlow>
+                                                   </children>
+                                                   <VBox.margin>
+                                                      <Insets left="40.0" right="40.0" />
+                                                   </VBox.margin>
+                                                </HBox>
+                                                <HBox>
+                                                   <children>
+                                                      <Label alignment="CENTER_RIGHT" prefWidth="120.0" text="Time: ">
+                                                         <font>
+                                                            <Font size="17.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextFlow HBox.hgrow="ALWAYS">
+                                                         <children>
+                                                            <Text fx:id="shinyTimeText" fill="#333333" strokeType="OUTSIDE" strokeWidth="0.0" text="0 Days">
+                                                               <font>
+                                                                  <Font size="18.0" />
+                                                               </font>
+                                                            </Text>
+                                                         </children>
+                                                         <padding>
+                                                            <Insets top="1.0" />
+                                                         </padding>
+                                                      </TextFlow>
+                                                   </children>
+                                                   <VBox.margin>
+                                                      <Insets left="40.0" right="40.0" />
+                                                   </VBox.margin>
+                                                </HBox>
+                                             </children>
+                                          </VBox>
+                                          <Button fx:id="shinyOptBtn" mnemonicParsing="false" onAction="#onShinyOptBtnClick" text="x" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0">
+                                             <font>
+                                                <Font name="System Bold" size="15.0" />
+                                             </font>
+                                          </Button>
+                                       </children>
+                                    </AnchorPane>
+                                    <Separator orientation="VERTICAL" prefHeight="200.0" />
+                                    <AnchorPane fx:id="shinyOptPane" minWidth="0.0">
+                                       <children>
+                                          <VBox alignment="TOP_CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <children>
+                                                <TextFlow textAlignment="CENTER">
+                                                   <children>
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Options">
+                                                         <font>
+                                                            <Font size="32.0" />
+                                                         </font>
+                                                      </Text>
+                                                   </children>
+                                                   <padding>
+                                                      <Insets bottom="10.0" top="10.0" />
+                                                   </padding>
+                                                </TextFlow>
+                                                <Label text="Target Pokémon">
+                                                   <font>
+                                                      <Font size="17.0" />
+                                                   </font>
+                                                </Label>
+                                                <ComboBox fx:id="shinyTargetSelector" editable="true" visibleRowCount="9">
+                                                   <VBox.margin>
+                                                      <Insets bottom="20.0" />
+                                                   </VBox.margin></ComboBox>
+                                                <Label text="Starting Date">
+                                                   <font>
+                                                      <Font size="17.0" />
+                                                   </font>
+                                                </Label>
+                                                <DatePicker fx:id="shinyStartDate" editable="false">
+                                                   <VBox.margin>
+                                                      <Insets bottom="20.0" />
+                                                   </VBox.margin>
+                                                </DatePicker>
+                                                <Label text="Shiny Charm">
+                                                   <font>
+                                                      <Font size="17.0" />
+                                                   </font>
+                                                </Label>
+                                                <CheckBox fx:id="shinyCharmCheckbox" mnemonicParsing="false">
+                                                   <font>
+                                                      <Font size="17.0" />
+                                                   </font>
+                                                   <VBox.margin>
+                                                      <Insets bottom="20.0" />
+                                                   </VBox.margin>
+                                                </CheckBox>
+                                                <Label text="Generation">
+                                                   <font>
+                                                      <Font size="17.0" />
+                                                   </font>
+                                                </Label>
+                                                <ChoiceBox fx:id="shinyGenerationChoice" prefWidth="180.0">
+                                                   <VBox.margin>
+                                                      <Insets bottom="40.0" />
+                                                   </VBox.margin></ChoiceBox>
+                                                <Button fx:id="shinyResetBtn" mnemonicParsing="false" onAction="#onShinyResetBtnPress" prefWidth="75.0" text="Reset" textFill="DARKRED">
+                                                   <VBox.margin>
+                                                      <Insets bottom="20.0" />
+                                                   </VBox.margin>
+                                                </Button>
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </AnchorPane>
+                                 </children>
+                              </HBox>
+                           </children></AnchorPane>
                      </content></Tab>
                   <Tab text="Team Builder">
                      <content>
-                        <AnchorPane />
+                        <AnchorPane>
+                           <children>
+                              <VBox layoutX="50.0" layoutY="107.0">
+                                 <children>
+                                    <ImageView fx:id="teamImage0" fitHeight="100.0" fitWidth="100.0" onMouseClicked="#removeTeamMember0" pickOnBounds="true" preserveRatio="true" />
+                                    <Label fx:id="teamText0" alignment="CENTER" prefHeight="25.0" prefWidth="100.0" />
+                                 </children>
+                              </VBox>
+                              <VBox layoutX="170.0" layoutY="107.0">
+                                 <children>
+                                    <ImageView fx:id="teamImage1" fitHeight="100.0" fitWidth="100.0" onMouseClicked="#removeTeamMember1" pickOnBounds="true" preserveRatio="true" />
+                                    <Label fx:id="teamText1" alignment="CENTER" prefHeight="25.0" prefWidth="100.0" />
+                                 </children>
+                              </VBox>
+                              <VBox layoutX="290.0" layoutY="107.0">
+                                 <children>
+                                    <ImageView fx:id="teamImage2" fitHeight="100.0" fitWidth="100.0" onMouseClicked="#removeTeamMember2" pickOnBounds="true" preserveRatio="true" />
+                                    <Label fx:id="teamText2" alignment="CENTER" prefHeight="25.0" prefWidth="100.0" />
+                                 </children>
+                              </VBox>
+                              <VBox layoutX="410.0" layoutY="107.0">
+                                 <children>
+                                    <ImageView fx:id="teamImage3" fitHeight="100.0" fitWidth="100.0" onMouseClicked="#removeTeamMember3" pickOnBounds="true" preserveRatio="true" />
+                                    <Label fx:id="teamText3" alignment="CENTER" prefHeight="25.0" prefWidth="100.0" />
+                                 </children>
+                              </VBox>
+                              <VBox layoutX="530.0" layoutY="107.0">
+                                 <children>
+                                    <ImageView fx:id="teamImage4" fitHeight="100.0" fitWidth="100.0" onMouseClicked="#removeTeamMember4" pickOnBounds="true" preserveRatio="true" />
+                                    <Label fx:id="teamText4" alignment="CENTER" prefHeight="25.0" prefWidth="100.0" />
+                                 </children>
+                              </VBox>
+                              <VBox layoutX="650.0" layoutY="107.0">
+                                 <children>
+                                    <ImageView fx:id="teamImage5" fitHeight="100.0" fitWidth="100.0" onMouseClicked="#removeTeamMember5" pickOnBounds="true" preserveRatio="true" />
+                                    <Label fx:id="teamText5" alignment="CENTER" prefHeight="25.0" prefWidth="100.0" />
+                                 </children>
+                              </VBox>
+                              <Button id="exporTeamButton" onAction="#handleExport" prefHeight="25.0" prefWidth="114.0" text="Export entire Team" AnchorPane.bottomAnchor="60" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="300.0" />
+                           </children></AnchorPane>
                      </content></Tab>
                   <Tab text="Pokémon Types">
                      <content>
-                        <AnchorPane />
+                        <AnchorPane>
+                           <children>
+                              <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <HBox alignment="CENTER">
+                                       <children>
+                                          <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                                             <children>
+                                                <Label text="Primary Type">
+                                                   <font>
+                                                      <Font name="System Bold Italic" size="22.0" />
+                                                   </font></Label>
+                                                <ComboBox fx:id="primaryType" prefWidth="150.0" visibleRowCount="20" />
+                                             </children>
+                                             <HBox.margin>
+                                                <Insets />
+                                             </HBox.margin>
+                                          </VBox>
+                                          <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                                             <children>
+                                                <Label text="Secondary Type">
+                                                   <font>
+                                                      <Font name="System Bold Italic" size="22.0" />
+                                                   </font></Label>
+                                                <ComboBox fx:id="secondaryType" prefWidth="150.0" visibleRowCount="20" />
+                                             </children>
+                                             <HBox.margin>
+                                                <Insets />
+                                             </HBox.margin>
+                                          </VBox>
+                                       </children>
+                                       <VBox.margin>
+                                          <Insets bottom="20.0" top="20.0" />
+                                       </VBox.margin>
+                                    </HBox>
+                                    <Separator prefWidth="200.0" />
+                                    <HBox VBox.vgrow="ALWAYS">
+                                       <children>
+                                          <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true" HBox.hgrow="ALWAYS">
+                                             <content>
+                                                <VBox alignment="CENTER_LEFT">
+                                                   <padding>
+                                                      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                                   </padding>
+                                                   <children>
+                                                      <TextFlow prefHeight="55.0">
+                                                         <children>
+                                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Damage Taken">
+                                                               <font>
+                                                                  <Font name="System Bold Italic" size="20.0" />
+                                                               </font>
+                                                            </Text>
+                                                         </children>
+                                                      </TextFlow>
+                                                      <Separator />
+                                                      <Separator layoutX="30.0" layoutY="109.0" />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Weaknesses">
+                                                         <font>
+                                                            <Font name="System Italic" size="18.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <VBox fx:id="dmgTakenWeakVBox" VBox.vgrow="ALWAYS" />
+                                                      <Separator />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Resistances">
+                                                         <font>
+                                                            <Font name="System Italic" size="18.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <VBox fx:id="dmgTakenResistVBox" VBox.vgrow="ALWAYS" />
+                                                      <Separator />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Immunities">
+                                                         <font>
+                                                            <Font name="System Italic" size="18.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <VBox fx:id="dmgTakenImmuneVBox" VBox.vgrow="ALWAYS" />
+                                                      <Separator layoutX="30.0" layoutY="213.0" />
+                                                      <Text layoutX="30.0" layoutY="234.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Neutral">
+                                                         <font>
+                                                            <Font name="System Italic" size="18.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <VBox fx:id="dmgTakenNeutralVBox" layoutX="30.0" layoutY="239.0" VBox.vgrow="ALWAYS" />
+                                                   </children>
+                                                </VBox>
+                                             </content>
+                                          </ScrollPane>
+                                          <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true" HBox.hgrow="ALWAYS">
+                                             <content>
+                                                <VBox alignment="CENTER_LEFT">
+                                                   <padding>
+                                                      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                                   </padding>
+                                                   <children>
+                                                      <TextFlow prefHeight="55.0" prefWidth="150.0">
+                                                         <children>
+                                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Damage Dealt (Primary)">
+                                                               <font>
+                                                                  <Font name="System Bold Italic" size="20.0" />
+                                                               </font>
+                                                            </Text>
+                                                         </children>
+                                                      </TextFlow>
+                                                      <Separator />
+                                                      <Separator />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Super-effective">
+                                                         <font>
+                                                            <Font name="System Italic" size="18.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <VBox fx:id="dmgDealtPrimSuperEffectiveVBox" VBox.vgrow="ALWAYS" />
+                                                      <Separator />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Not very effective">
+                                                         <font>
+                                                            <Font name="System Italic" size="18.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <VBox fx:id="dmgDealtPrimNotEffectiveVBox" VBox.vgrow="ALWAYS" />
+                                                      <Separator />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="No effect">
+                                                         <font>
+                                                            <Font name="System Italic" size="18.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <VBox fx:id="dmgDealtPrimNoEffectVBox" VBox.vgrow="ALWAYS" />
+                                                      <Separator layoutX="30.0" layoutY="212.0" />
+                                                      <Text layoutX="30.0" layoutY="235.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Neutral">
+                                                         <font>
+                                                            <Font name="System Italic" size="18.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <VBox fx:id="dmgDealtPrimNeutralVBox" layoutX="30.0" layoutY="240.0" VBox.vgrow="ALWAYS" />
+                                                   </children>
+                                                </VBox>
+                                             </content>
+                                          </ScrollPane>
+                                          <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true" HBox.hgrow="ALWAYS">
+                                             <content>
+                                                <VBox alignment="CENTER_LEFT">
+                                                   <padding>
+                                                      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                                   </padding>
+                                                   <children>
+                                                      <TextFlow prefHeight="55.0" prefWidth="150.0">
+                                                         <children>
+                                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Damage Dealt (Secondary)">
+                                                               <font>
+                                                                  <Font name="System Bold Italic" size="20.0" />
+                                                               </font>
+                                                            </Text>
+                                                         </children>
+                                                      </TextFlow>
+                                                      <Separator />
+                                                      <Separator />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Super-effective">
+                                                         <font>
+                                                            <Font name="System Italic" size="18.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <VBox fx:id="dmgDealtSecSuperEffectiveVBox" VBox.vgrow="ALWAYS" />
+                                                      <Separator />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Not very effective">
+                                                         <font>
+                                                            <Font name="System Italic" size="18.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <VBox fx:id="dmgDealtSecNotEffectiveVBox" VBox.vgrow="ALWAYS" />
+                                                      <Separator />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="No effect">
+                                                         <font>
+                                                            <Font name="System Italic" size="18.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <VBox fx:id="dmgDealtSecNoEffectVBox" VBox.vgrow="ALWAYS" />
+                                                      <Separator layoutX="30.0" layoutY="212.0" />
+                                                      <Text layoutX="30.0" layoutY="235.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Neutral">
+                                                         <font>
+                                                            <Font name="System Italic" size="18.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <VBox fx:id="dmgDealtSecNeutralVBox" layoutX="30.0" layoutY="240.0" VBox.vgrow="ALWAYS" />
+                                                   </children>
+                                                </VBox>
+                                             </content>
+                                          </ScrollPane>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+                           </children></AnchorPane>
                      </content></Tab>
                   <Tab text="Damage Calculator">
                      <content>
                         <AnchorPane />
                      </content></Tab>
-              </tabs>
+               </tabs>
             </TabPane>
          </children>
       </HBox>
