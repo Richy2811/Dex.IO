@@ -8,21 +8,21 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 
 import java.util.concurrent.Callable;
 
-public class ConcurrentConnection implements Callable<TypeDTO> {
+public class ConcurrentTypeConnection implements Callable<TypeDTO> {
     //json mapper for deserialisation of TypeDTO object
     private final ObjectMapper jsonMapper = JsonMapper.builder()
             .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             .build();
 
-    private final String url;
+    private final String typeURL;
 
-    public ConcurrentConnection(String url){
-        this.url = url;
+    public ConcurrentTypeConnection(String url){
+        this.typeURL = url;
     }
 
     @Override
-    public TypeDTO call() {
-        String typeDTOJsonString = TcpConnectionHandler.getFromUrl(url);
+    public TypeDTO call() throws Exception {
+        String typeDTOJsonString = TcpConnectionHandler.getFromUrl(typeURL);
         try {
             return jsonMapper.readValue(typeDTOJsonString, TypeDTO.class);
         }
