@@ -9,4 +9,5 @@ module at.fhtw.dexio {
     exports at.fhtw.dexio;
     exports at.fhtw.dexio.networking;
     opens at.fhtw.dexio.networking to javafx.fxml;
+    opens at.fhtw.dexio.pokemonstats to com.fasterxml.jackson.databind;
 }

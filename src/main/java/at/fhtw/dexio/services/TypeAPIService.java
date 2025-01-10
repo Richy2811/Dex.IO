@@ -1,6 +1,6 @@
 package at.fhtw.dexio.services;
 
-import at.fhtw.dexio.networking.ConcurrentConnection;
+import at.fhtw.dexio.networking.ConcurrentTypeConnection;
 import at.fhtw.dexio.networking.TcpConnectionHandler;
 import at.fhtw.dexio.pokemontypes.TypeDTO;
 import at.fhtw.dexio.pokemontypes.TypeDexDTO;
@@ -52,7 +52,7 @@ public class TypeAPIService extends Service<Map<String, TypeDTO>> {
                     for(int i = 0; i < typeDex.getResults().size(); i++){
                         String typeEntryURL = typeDex.getResults().get(i).getUrl();
                         //usage of FutureTask allows to wait for each task individually
-                        taskPool.add(new FutureTask<>(new ConcurrentConnection(typeEntryURL)));
+                        taskPool.add(new FutureTask<>(new ConcurrentTypeConnection(typeEntryURL)));
                         Thread th = new Thread(taskPool.get(i));
                         th.start();
                     }

@@ -1,7 +1,7 @@
 package at.fhtw.dexio.services;
 
 import at.fhtw.dexio.networking.TcpConnectionHandler;
-import at.fhtw.dexio.pokedex.PokemonDTO;
+import at.fhtw.dexio.pokemonmoves.MoveDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,30 +9,29 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
-public class ShinyTrackerService extends Service<PokemonDTO> {
-
-    //json mapper for deserialisation of PokemonDTO object
+public class MoveInfoService extends Service<MoveDTO> {
+    //json mapper for deserialisation of MoveDTO object
     private final ObjectMapper jsonMapper = JsonMapper.builder()
             .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             .build();
 
-    private String shinyPokemonInfoURL = null;
+    String moveURL;
 
-    public void setShinyPokemonInfoURL(String shinyPokemonInfoURL) {
-        this.shinyPokemonInfoURL = shinyPokemonInfoURL;
+    public void setMoveURL(String moveURL) {
+        this.moveURL = moveURL;
     }
 
-    public String getShinyPokemonInfoURL() {
-        return shinyPokemonInfoURL;
+    public String getMoveURL() {
+        return moveURL;
     }
 
     @Override
-    protected Task<PokemonDTO> createTask() {
+    protected Task<MoveDTO> createTask() {
         return new Task<>() {
-            protected PokemonDTO call() {
-                String shinyPokemonJsonString = TcpConnectionHandler.getFromUrl(shinyPokemonInfoURL);
+            protected MoveDTO call() {
+                String moveJsonString = TcpConnectionHandler.getFromUrl(moveURL);
                 try {
-                    return jsonMapper.readValue(shinyPokemonJsonString, PokemonDTO.class);
+                    return jsonMapper.readValue(moveJsonString, MoveDTO.class);
                 }
                 catch (JsonProcessingException e){
                     return null;
