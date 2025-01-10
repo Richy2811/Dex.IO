@@ -171,6 +171,16 @@ public class DexIOController {
     private MoveDTO dmgCalcCurrentMove;
 
     @FXML
+    private Spinner<Integer> dmgCalcHpSpin;
+
+    private SpinnerValueFactory.IntegerSpinnerValueFactory dmgCalcHpSpinValueFactory;
+
+    private Boolean newPokemon2Chosen;
+
+    @FXML
+    private ProgressBar dmgCalcHpBar;
+
+    @FXML
     private ImageView dmgCalcPokemon1Img;
 
     @FXML
@@ -839,6 +849,7 @@ public class DexIOController {
                     newPokemon.getStats().get(5).getBase_stat()
             );
 
+            newPokemon2Chosen = true;
             calculateStats();
             calculateDamage();
         });
@@ -921,6 +932,9 @@ public class DexIOController {
                 dmgCalcPokemon2Type1.setImage(null);
                 dmgCalcPokemon2Type2.setImage(null);
 
+                //disable field to one until the new Pokémon has loaded and its stats are calculated
+                dmgCalcHpSpin.setDisable(true);
+
                 //set stats to zero
                 setPokemon2BaseStats(0, 0, 0, 0, 0, 0);
                 setPokemon2ResultStats(0, 0, 0, 0, 0, 0);
@@ -959,6 +973,11 @@ public class DexIOController {
             //cancel any currently running move info service
             moveInfoService.cancel();
 
+            //clear final damage result text
+            dmgCalcResultText.setText("");
+            dmgCalcResultCommentText.setText("");
+
+            //set move information to point out it is loading
             dmgCalcMoveTypeText.setText("...");
             dmgCalcMoveCatText.setText("...");
             dmgCalcMovePwrText.setText("...");
@@ -1182,10 +1201,14 @@ public class DexIOController {
         calculateDamage();
     }
 
-    private void intSpinnerHandler(String newValue, Spinner<Integer> spinner) {
+    private void intSpinnerHandler(String oldValue, String newValue, Spinner<Integer> spinner) {
         //set spinner value to 0 if null
         if(newValue == null){
             spinner.getEditor().setText("0");
+            return;
+        }
+        if(newValue.equals(oldValue)){
+            //no change
             return;
         }
         //check if spinner only contains numeric values
@@ -1249,87 +1272,92 @@ public class DexIOController {
     }
 
     private void setDmgCalcSpinnerValueFactories(){
+        //hp value of defending Pokémon
+        dmgCalcHpSpinValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 0, 0);
+        dmgCalcHpSpin.setValueFactory(dmgCalcHpSpinValueFactory);
+        dmgCalcHpSpin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(oldValue, newValue, dmgCalcHpSpin));
+
         //individual values of attacking Pokémon
         hpIvPokemon1Spin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 31, 31));
-        hpIvPokemon1Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(newValue, hpIvPokemon1Spin));
+        hpIvPokemon1Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(oldValue, newValue, hpIvPokemon1Spin));
 
         atkIvPokemon1Spin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 31, 31));
-        atkIvPokemon1Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(newValue, atkIvPokemon1Spin));
+        atkIvPokemon1Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(oldValue, newValue, atkIvPokemon1Spin));
 
         defIvPokemon1Spin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 31, 31));
-        defIvPokemon1Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(newValue, defIvPokemon1Spin));
+        defIvPokemon1Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(oldValue, newValue, defIvPokemon1Spin));
 
         spAtkIvPokemon1Spin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 31, 31));
-        spAtkIvPokemon1Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(newValue, spAtkIvPokemon1Spin));
+        spAtkIvPokemon1Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(oldValue, newValue, spAtkIvPokemon1Spin));
 
         spDefIvPokemon1Spin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 31, 31));
-        spDefIvPokemon1Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(newValue, spDefIvPokemon1Spin));
+        spDefIvPokemon1Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(oldValue, newValue, spDefIvPokemon1Spin));
 
         speedIvPokemon1Spin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 31, 31));
-        speedIvPokemon1Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(newValue, speedIvPokemon1Spin));
+        speedIvPokemon1Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(oldValue, newValue, speedIvPokemon1Spin));
 
         //individual values of defending Pokémon
         hpIvPokemon2Spin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 31, 31));
-        hpIvPokemon2Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(newValue, hpIvPokemon2Spin));
+        hpIvPokemon2Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(oldValue, newValue, hpIvPokemon2Spin));
 
         atkIvPokemon2Spin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 31, 31));
-        atkIvPokemon2Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(newValue, atkIvPokemon2Spin));
+        atkIvPokemon2Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(oldValue, newValue, atkIvPokemon2Spin));
 
         defIvPokemon2Spin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 31, 31));
-        defIvPokemon2Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(newValue, defIvPokemon2Spin));
+        defIvPokemon2Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(oldValue, newValue, defIvPokemon2Spin));
 
         spAtkIvPokemon2Spin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 31, 31));
-        spAtkIvPokemon2Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(newValue, spAtkIvPokemon2Spin));
+        spAtkIvPokemon2Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(oldValue, newValue, spAtkIvPokemon2Spin));
 
         spDefIvPokemon2Spin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 31, 31));
-        spDefIvPokemon2Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(newValue, spDefIvPokemon2Spin));
+        spDefIvPokemon2Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(oldValue, newValue, spDefIvPokemon2Spin));
 
         speedIvPokemon2Spin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 31, 31));
-        speedIvPokemon2Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(newValue, speedIvPokemon2Spin));
+        speedIvPokemon2Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(oldValue, newValue, speedIvPokemon2Spin));
 
         //effort values of attacking Pokémon
         hpEvPokemon1Spin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 252, 0));
-        hpEvPokemon1Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(newValue, hpEvPokemon1Spin));
+        hpEvPokemon1Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(oldValue, newValue, hpEvPokemon1Spin));
 
         atkEvPokemon1Spin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 252, 0));
-        atkEvPokemon1Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(newValue, atkEvPokemon1Spin));
+        atkEvPokemon1Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(oldValue, newValue, atkEvPokemon1Spin));
 
         defEvPokemon1Spin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 252, 0));
-        defEvPokemon1Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(newValue, defEvPokemon1Spin));
+        defEvPokemon1Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(oldValue, newValue, defEvPokemon1Spin));
 
         spAtkEvPokemon1Spin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 252, 0));
-        spAtkEvPokemon1Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(newValue, spAtkEvPokemon1Spin));
+        spAtkEvPokemon1Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(oldValue, newValue, spAtkEvPokemon1Spin));
 
         spDefEvPokemon1Spin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 252, 0));
-        spDefEvPokemon1Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(newValue, spDefEvPokemon1Spin));
+        spDefEvPokemon1Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(oldValue, newValue, spDefEvPokemon1Spin));
 
         speedEvPokemon1Spin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 252, 0));
-        speedEvPokemon1Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(newValue, speedEvPokemon1Spin));
+        speedEvPokemon1Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(oldValue, newValue, speedEvPokemon1Spin));
 
         //effort values of defending Pokémon
         hpEvPokemon2Spin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 252, 0));
-        hpEvPokemon2Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(newValue, hpEvPokemon2Spin));
+        hpEvPokemon2Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(oldValue, newValue, hpEvPokemon2Spin));
 
         atkEvPokemon2Spin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 252, 0));
-        atkEvPokemon2Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(newValue, atkEvPokemon2Spin));
+        atkEvPokemon2Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(oldValue, newValue, atkEvPokemon2Spin));
 
         defEvPokemon2Spin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 252, 0));
-        defEvPokemon2Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(newValue, defEvPokemon2Spin));
+        defEvPokemon2Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(oldValue, newValue, defEvPokemon2Spin));
 
         spAtkEvPokemon2Spin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 252, 0));
-        spAtkEvPokemon2Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(newValue, spAtkEvPokemon2Spin));
+        spAtkEvPokemon2Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(oldValue, newValue, spAtkEvPokemon2Spin));
 
         spDefEvPokemon2Spin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 252, 0));
-        spDefEvPokemon2Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(newValue, spDefEvPokemon2Spin));
+        spDefEvPokemon2Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(oldValue, newValue, spDefEvPokemon2Spin));
 
         speedEvPokemon2Spin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 252, 0));
-        speedEvPokemon2Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(newValue, speedEvPokemon2Spin));
+        speedEvPokemon2Spin.getEditor().textProperty().addListener((observable, oldValue, newValue) -> intSpinnerHandler(oldValue, newValue, speedEvPokemon2Spin));
 
         dmgCalcPokemon1LevelSpin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, 100));
-        dmgCalcPokemon1LevelSpin.getEditor().textProperty().addListener((observable, oldLevel, newLevel) -> intSpinnerHandler(newLevel, dmgCalcPokemon1LevelSpin));
+        dmgCalcPokemon1LevelSpin.getEditor().textProperty().addListener((observable, oldLevel, newLevel) -> intSpinnerHandler(oldLevel, newLevel, dmgCalcPokemon1LevelSpin));
 
         dmgCalcPokemon2LevelSpin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, 100));
-        dmgCalcPokemon2LevelSpin.getEditor().textProperty().addListener((observable, oldLevel, newLevel) -> intSpinnerHandler(newLevel, dmgCalcPokemon2LevelSpin));
+        dmgCalcPokemon2LevelSpin.getEditor().textProperty().addListener((observable, oldLevel, newLevel) -> intSpinnerHandler(oldLevel, newLevel, dmgCalcPokemon2LevelSpin));
     }
 
     private Integer hpCalculation(Integer base, Integer iv, Integer ev, Integer level){
@@ -1357,6 +1385,11 @@ public class DexIOController {
 
         //if the above conditions do not apply, then this nature does not affect the currently checked stat
         return (int) unmodifiedStat;
+    }
+
+    private Boolean isBetween(double low, double high, double num){
+        //return true if number is between low and (exclusive) high
+        return (low <= num) && (num < high);
     }
 
     private void calculateStats(){
@@ -1474,12 +1507,33 @@ public class DexIOController {
             );
 
             setPokemon2ResultStats(hpResult2, atkResult2, defResult2, spAtkResult2, spDefResult2, speedResult2);
-        }
-    }
 
-    private Boolean isBetween(double low, double high, double num){
-        //return true if number is between low and (exclusive) high
-        return (low <= num) && (num < high);
+            //reset minimum and maximum hp for spinner upon recalculation of stats
+            dmgCalcHpSpinValueFactory.setMin(1);
+            dmgCalcHpSpinValueFactory.setMax(hpResult2);
+
+            //set hp to maximum if a new defending Pokémon is chosen
+            if(newPokemon2Chosen){
+                dmgCalcHpSpinValueFactory.setValue(hpResult2);
+                //re-enable spinner
+                dmgCalcHpSpin.setDisable(false);
+                //unset Pokémon chosen flag
+                newPokemon2Chosen = false;
+            }
+
+            //update hp-bar
+            double hpRatio = (double) dmgCalcHpSpin.getValue() / hpResult2;
+            dmgCalcHpBar.setProgress(hpRatio);
+            if(hpRatio >= 0.5){
+                dmgCalcHpBar.styleProperty().setValue("-fx-accent: lime");
+            }
+            else if(isBetween(0.2, 0.5, hpRatio)){
+                dmgCalcHpBar.styleProperty().setValue("-fx-accent: orange");
+            }
+            else if(isBetween(0, 0.2, hpRatio)){
+                dmgCalcHpBar.styleProperty().setValue("-fx-accent: red");
+            }
+        }
     }
 
     private List<Double> applyMultipliers(Double initialDamage){
@@ -1607,14 +1661,14 @@ public class DexIOController {
         int finalHighRollDamage = damageRange.getLast().intValue();
 
         //print damage numbers on UI (truncate past first decimal)
-        String lowRollDamagePercent = String.format("%.1f", Math.floor(finalLowRollDamage / Float.parseFloat(hpResultPokemon2Text.getText()) * 1000.0) / 10.0);
-        String highRollDamagePercent = String.format("%.1f", Math.floor(finalHighRollDamage / Float.parseFloat(hpResultPokemon2Text.getText()) * 1000.0) / 10.0);
+        String lowRollDamagePercent = String.format("%.1f", Math.floor((float) finalLowRollDamage / dmgCalcHpSpin.getValue() * 1000.0) / 10.0);
+        String highRollDamagePercent = String.format("%.1f", Math.floor((float) finalHighRollDamage / dmgCalcHpSpin.getValue() * 1000.0) / 10.0);
         dmgCalcResultText.setText(finalLowRollDamage + " - " + finalHighRollDamage + "HP (" + lowRollDamagePercent + " - " + highRollDamagePercent + "%)");
 
         //print additional information on UI
         //calculate the ratio of damage dealt (ranges from around 0 to any value > 0 with 1 and above meaning a move will knock out the opposing Pokémon in one hit)
-        float lowRollDamageRatio = finalLowRollDamage / Float.parseFloat(hpResultPokemon2Text.getText());
-        float highRollDamageRatio = finalHighRollDamage / Float.parseFloat(hpResultPokemon2Text.getText());
+        float lowRollDamageRatio = (float) finalLowRollDamage / dmgCalcHpSpin.getValue();
+        float highRollDamageRatio = (float) finalHighRollDamage / dmgCalcHpSpin.getValue();
 
         //check how many hits it would take to knock out the opposing Pokémon under the same conditions
         if(highRollDamageRatio == 0){
@@ -1715,6 +1769,7 @@ public class DexIOController {
         //check for any invalid values used for calculation
         return !(dmgCalcCurrentPokemon1 == null) &&
                 !(dmgCalcCurrentPokemon2 == null) &&
+                !(dmgCalcHpSpin == null) &&
                 !hpResultPokemon1Text.getText().isEmpty() &&
                 !atkResultPokemon1Text.getText().isEmpty() &&
                 !defResultPokemon1Text.getText().isEmpty() &&
