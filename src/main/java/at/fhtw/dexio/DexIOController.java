@@ -1,5 +1,6 @@
 package at.fhtw.dexio;
 
+import at.fhtw.dexio.networking.TcpConnectionHandler;
 import at.fhtw.dexio.pokedex.*;
 import at.fhtw.dexio.pokemonmoves.MoveDTO;
 import at.fhtw.dexio.pokemonmoves.MoveEntryDTO;
@@ -8,10 +9,20 @@ import at.fhtw.dexio.pokemontypes.TypeDTO;
 import at.fhtw.dexio.pokemontypes.TypeEntryDTO;
 import at.fhtw.dexio.services.*;
 import at.fhtw.dexio.fileio.FileIO;
+import at.fhtw.dexio.sorting.SortingController;
+import at.fhtw.dexio.sorting.SortingEntryDTO;
+import at.fhtw.dexio.sorting.SortingTypeDTO;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.ComboBoxListCell;
 import javafx.scene.image.Image;
@@ -19,6 +30,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -88,6 +100,69 @@ public class DexIOController {
     private double shinyOdds = (double) 1 / 8192;
 
     private int shinyRolls = 1;
+
+    //Team builder fields
+
+    /**
+     * Button for adding or removing a Pokemon from the current Team
+     */
+    @FXML
+    public Button addOrRemoveTeamMemberButton;
+
+    /**
+     * Image views for displaying the image of the Pokemon in the Team 1-5 for each Pokemon an extra variable
+     */
+    @FXML
+    private ImageView teamImage0;
+
+    @FXML
+    private ImageView teamImage1;
+
+    @FXML
+    private ImageView teamImage2;
+
+    @FXML
+    private ImageView teamImage3;
+
+    @FXML
+    private ImageView teamImage4;
+
+    @FXML
+    private ImageView teamImage5;
+
+    /**
+     * Labels for displaying the names of each Pokemon 1-5
+     */
+    @FXML
+    private Label teamText0;
+
+    @FXML
+    private Label teamText1;
+
+    @FXML
+    private Label teamText2;
+
+    @FXML
+    private Label teamText3;
+
+    @FXML
+    private Label teamText4;
+
+    @FXML
+    private Label teamText5;
+
+    /**
+     * Array holding the image views for team Pokemon
+     */
+    private ImageView[] teamImages;
+    /**
+     * Array holding each Pokemon name
+     */
+    private Label[] teamTexts;
+    /**
+     * Current team size
+     */
+    private int currentTeamSize = 0;
 
 
     //Pokémon Type fields
@@ -430,6 +505,7 @@ public class DexIOController {
     private final MovedexService moveEntryService = new MovedexService();
     private final MoveInfoService moveInfoService = new MoveInfoService();
     private final NatureService natureService =  new NatureService();
+    private final PokemonInfoService pokemonInfoService = new PokemonInfoService();
 
 
     //Placeholder sprite for loading images
@@ -442,7 +518,7 @@ public class DexIOController {
         //---------------------------------------------Pokédex---------------------------------------------
         //-------------------------------------------------------------------------------------------------
         //get Pokédex entries from the PokeAPI
-        pokedexEntryService.setPokedexURL("https://pokeapi.co/api/v2/pokemon");
+        pokedexEntryService.setPokedexURL("https://pokeapi.co/api/v2/pokemon?limit=200");
         pokedexEntryService.restart();
 
         //add listener for when the Pokédex object has been loaded
@@ -503,6 +579,18 @@ public class DexIOController {
             //show Pokémon sprite in information section
             Image spriteImage = new Image(newPokemonInfo.getSprites().getFront_default());
             pokemonImg.setImage(spriteImage);
+
+            //check if Pokémon is already in team and change button text according to that
+            if (currentTeamSize >= 6) {
+                addOrRemoveTeamMemberButton.setText("Team is full");
+                addOrRemoveTeamMemberButton.setDisable(true);
+            } else if (IsPokemonAlreadyInTeam()) {
+                addOrRemoveTeamMemberButton.setText("Remove from team");
+                addOrRemoveTeamMemberButton.setDisable(false);
+            } else {
+                addOrRemoveTeamMemberButton.setText("Add to team");
+                addOrRemoveTeamMemberButton.setDisable(false);
+            }
         });
 
         //add listener for changes of the Pokémon species information in the Pokédex tab (responsible for Pokédex description)
@@ -656,6 +744,21 @@ public class DexIOController {
 
         //set initial info
         updateShinyInfo();
+
+        //-------------------------------------------------------------------------------------------------
+        //------------------------------------------Team builder------------------------------------------
+        //-------------------------------------------------------------------------------------------------
+        //Array for saving all the images of the Pokemon
+        teamImages = new ImageView[]{teamImage0, teamImage1, teamImage2, teamImage3, teamImage4, teamImage5};
+        //Array for saving every label of each Pokemon
+        teamTexts = new Label[]{teamText0, teamText1, teamText2, teamText3, teamText4, teamText5};
+
+        //Initialize all available team slots with the pokemon placholder sprite
+        for (int i = 0; i < teamImages.length; i++)
+        {
+            teamImages[i].setImage(placeHolderSprite);
+        }
+
 
 
         //-------------------------------------------------------------------------------------------------
@@ -1119,21 +1222,213 @@ public class DexIOController {
         shinyTimeText.setText(ChronoUnit.DAYS.between(shinyStartDate.getValue(), LocalDate.now()) + " days");
     }
 
+    /**
+     * Handle adding or removing Pokemons from the team
+     */
     @FXML
-    private void handleExport() {
-        // Get the selected Pokémon
-        PokedexEntryDTO selectedPokemon = dexListView.getSelectionModel().getSelectedItem();
+    protected void onTeamMemberAddOrRemoveBtnPress() {
+        //check if Pokemon is already in team and update button function if it is or is not
+        if (IsPokemonAlreadyInTeam())
+        {
+            //Pokemon is already in team -> remove it
+            for (int i = 0; i < teamTexts.length; i++)
+            {
+                if (teamTexts[i].getText().equals(pokemonName.getText()))
+                {
+                    // remove pokemon in the according slot
+                    UpdateTeamSlots(i);
+                    break;
+                }
+            }
+            //Updated text so the Pokemon can be added again
+            addOrRemoveTeamMemberButton.setText("Add to team");
+        }
+        else
+        {
+            //Add Pokeom the the team
+            if (currentTeamSize <= 5) {
+                teamImages[currentTeamSize].setImage(pokemonImg.getImage());
+                teamTexts[currentTeamSize].setText(pokemonName.getText());
+                currentTeamSize++;
+                addOrRemoveTeamMemberButton.setText("Remove from team");
+            }
+        }
+    }
 
-        if (selectedPokemon == null) {
-            System.err.println("No Pokémon selected for export.");
+    /**
+     * Each functtions for removing team members for each slot there is a dedicated slot number
+     */
+    @FXML
+    protected void removeTeamMember0() {
+        UpdateTeamSlots(0);
+        if (currentTeamSize > 0)
+            currentTeamSize--;
+    }
+
+    @FXML
+    protected void removeTeamMember1() {
+        UpdateTeamSlots(1);
+        if (currentTeamSize > 0)
+            currentTeamSize--;
+    }
+
+    @FXML
+    protected void removeTeamMember2() {
+        UpdateTeamSlots(2);
+        if (currentTeamSize > 0)
+            currentTeamSize--;
+    }
+
+    @FXML
+    protected void removeTeamMember3() {
+        UpdateTeamSlots(3);
+        if (currentTeamSize > 0)
+            currentTeamSize--;
+    }
+
+    @FXML
+    protected void removeTeamMember4() {
+        UpdateTeamSlots(4);
+        if (currentTeamSize > 0)
+            currentTeamSize--;
+    }
+
+    @FXML
+    protected void removeTeamMember5() {
+        UpdateTeamSlots(5);
+        if (currentTeamSize > 0)
+            currentTeamSize--;
+    }
+
+    private void UpdateTeamSlots(int startIndex) {
+        //check if removed Pokemon is selected in the Pokedex
+        if (teamTexts[startIndex].getText().equals(pokemonName.getText()))
+            addOrRemoveTeamMemberButton.setText("Add to team");
+        //Move Pokemon to the left
+        int i = startIndex;
+        for (; i < currentTeamSize - 1; i++) {
+            teamImages[i].setImage(teamImages[i + 1].getImage());
+            teamTexts[i].setText(teamTexts[i + 1].getText());
+        }
+        // Clear the last slot
+        teamImages[currentTeamSize - 1].setImage(placeHolderSprite);
+        teamTexts[currentTeamSize - 1].setText("");
+    }
+
+    /**
+     * Helper methode to check if the pokemon is already in the team simple if, return false when Pokemon is not in the team
+     */
+    private boolean IsPokemonAlreadyInTeam() {
+        for (int i = 0; i < teamTexts.length; i++) {
+            if (teamTexts[i].getText().equals(pokemonName.getText()))
+                return true;
+        }
+        return false;
+    }
+
+    @FXML
+    private void handleExportTeam() {
+        List<PokemonExportDTO> teamMembers = new ArrayList<>();
+
+        //Array which contains the data of the Pokemons
+        for (int i = 0; i < teamTexts.length; i++) {
+            if (!teamTexts[i].getText().isEmpty()) {
+                String pokemonName = teamTexts[i].getText();
+
+                // Construct the Pokemon API URL
+                String pokemonUrl = "https://pokeapi.co/api/v2/pokemon/" + pokemonName.toLowerCase();
+
+                // Fetch detailed data for the Pokemon
+                PokemonDTO detailedData = fetchPokemonDetails(pokemonUrl);
+
+                //Extract relevant data
+                if (detailedData != null) {
+                    String imageUrl = detailedData.getSprites().getFront_default(); // Fetch image
+                    String primaryType = detailedData.getTypes().get(0).getType().getName(); // Fetch type
+                    String secondaryType = detailedData.getTypes().size() > 1
+                            ? detailedData.getTypes().get(1).getType().getName()
+                            : null;
+
+                    // Add all Pokemon data to the export list
+                    teamMembers.add(new PokemonExportDTO(
+                            detailedData.getName(), imageUrl, primaryType, secondaryType, 0));
+                }
+            }
+        }
+        //Nothing to export
+        if (teamMembers.isEmpty()) {
+            System.err.println("No Pokemon in the team to export.");
             return;
         }
 
-        // Use the Pokémon's name as the file name
+        // Export to HTML
+        FileIO.exportTeamToHTML("PokemonTeam.html", teamMembers);
+    }
+
+    private PokemonDTO fetchPokemonDetails(String pokemonUrl) {
+        // Use TcpConnectionHandler to fetch raw JSON data from the URL
+        String rawJson = TcpConnectionHandler.getFromUrl(pokemonUrl);
+
+        //Failed to fetch data
+        if (rawJson == null || rawJson.isEmpty()) {
+            System.err.println("Failed to fetch Pokemon details from URL: " + pokemonUrl);
+            return null;
+        }
+
+        // Map the JSON data to a PokemonDTO object
+        ObjectMapper jsonMapper = new ObjectMapper();
+        jsonMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+        try {
+            return jsonMapper.readValue(rawJson, PokemonDTO.class);
+        } catch (JsonProcessingException e) {
+            System.err.println("Error parsing Pokémon details: " + e.getMessage());
+            return null;
+        }
+    }
+
+    @FXML
+    private void handleExport() {
+        // Get the selected Pokemon
+        PokedexEntryDTO selectedPokemon = dexListView.getSelectionModel().getSelectedItem();
+
+        if (selectedPokemon == null) {
+            System.err.println("No Pokemon selected for export.");
+            return;
+        }
+
+        // Use the Pokemons name as the file name
         String fileName = selectedPokemon.getName() + ".json";
 
-        // Export the selected Pokémon to the desktop
+        // Export the selected Pokemon to the desktop
         FileIO.exportToDesktop(fileName, selectedPokemon);
+    }
+
+    @FXML
+    public void OpenSortingMenu(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/at/fhtw/dexio/sorting/popupSorting.fxml"));
+            Parent root = loader.load();
+
+            SortingController sortingController = loader.getController();
+
+            List<SortingEntryDTO> sortingEntries = pokedexEntries.stream()
+                    .map(entry -> new SortingEntryDTO(entry.getName(), List.of())) // Ignore types if not needed
+                    .toList();
+
+
+            sortingController.setSortingEntries(sortingEntries);
+
+            Stage popupStage = new Stage();
+            popupStage.setTitle("Sorting Menu");
+            popupStage.setScene(new Scene(root));
+            popupStage.initOwner(((Stage) dexListView.getScene().getWindow()));
+            popupStage.show();
+
+        } catch (Exception e) {
+            System.err.println("Error opening the sorting menu: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private void typeSelectionHandler(TypeDTO primaryTypeSelect, TypeDTO secondaryTypeSelect) {

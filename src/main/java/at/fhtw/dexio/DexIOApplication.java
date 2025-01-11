@@ -11,11 +11,11 @@ public class DexIOApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(DexIOApplication.class.getResource("DexIOView.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 850, 700);
+        Scene scene = new Scene(fxmlLoader.load(), 1000, 620);
         stage.setTitle("DexIO");
         stage.setScene(scene);
-        stage.setMinWidth(800);
-        stage.setMinHeight(650);
+        stage.setMinWidth(700);
+        stage.setMinHeight(500);
         stage.show();
     }
 
