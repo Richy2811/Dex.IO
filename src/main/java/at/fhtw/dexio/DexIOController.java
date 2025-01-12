@@ -2093,4 +2093,28 @@ public class DexIOController {
                 !(dmgCalcPokemon1LevelSpin.getValue() == null) &&
                 !(dmgCalcPokemon2LevelSpin.getValue() == null);
     }
+    
+    @FXML
+    private void quit() {
+        // Retrieve the Stage from the MenuItem's scene
+        Stage stage = (Stage) quitMenu.getParentPopup().getOwnerWindow();
+        stage.close(); // Close the current window
+    }
+
+    @FXML
+    private void openAboutWindow() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/at/fhtw/dexio/about/aboutDexIO.fxml"));
+            Parent root = loader.load();
+
+            Stage aboutStage = new Stage();
+            aboutStage.setTitle("About Dex.IO");
+            aboutStage.setScene(new Scene(root));
+            aboutStage.initModality(Modality.APPLICATION_MODAL); // Ensures it is a modal window
+            aboutStage.showAndWait();
+        } catch (Exception e) {
+            System.err.println("Error opening About window: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 }
