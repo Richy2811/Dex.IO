@@ -4,87 +4,99 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.fhtw.dexio.sorting.SortingController">
+<VBox spacing="40.0" xmlns="http://javafx.com/javafx/22.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.fhtw.dexio.sorting.SortingController">
     <children>
-        <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
-            <children>
-                <HBox prefHeight="400.0" prefWidth="640.0">
+              <HBox alignment="CENTER">
+                  <children>
+                      <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                          <children>
+                              <Label text="Name">
+                                  <font>
+                                      <Font name="System Bold Italic" size="22.0" />
+                                  </font>
+                              </Label>
+                              <TextField fx:id="sortForName" promptText="Enter name...">
+                                  <VBox.margin>
+                                      <Insets />
+                                  </VBox.margin>
+                              </TextField>
+                          </children>
+                          <HBox.margin>
+                              <Insets />
+                          </HBox.margin>
+                      </VBox>
+                  </children>
+              </HBox>
+      <HBox alignment="CENTER" spacing="20.0">
+         <children>
+            <VBox alignment="TOP_CENTER" spacing="10.0">
+               <children>
+                  <Label text="Sort by">
+                     <font>
+                        <Font name="System Bold Italic" size="22.0" />
+                     </font>
+                  </Label>
+                  <HBox alignment="TOP_CENTER" spacing="20.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <RadioButton fx:id="sortByID" mnemonicParsing="false" selected="true" text="ID">
+                           <toggleGroup>
+                              <ToggleGroup fx:id="sortBy" />
+                           </toggleGroup>
+                        </RadioButton>
+                        <RadioButton fx:id="sortByName" mnemonicParsing="false" text="Name" toggleGroup="$sortBy" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+            <VBox spacing="10.0">
+               <children>
+                  <HBox alignment="CENTER">
+                     <children>
+                        <Label text="Order">
+                           <font>
+                              <Font name="System Bold Italic" size="22.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </HBox>
+                  <RadioButton fx:id="sortAscending" mnemonicParsing="false" selected="true" text="Ascending">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="order" />
+                     </toggleGroup>
+                  </RadioButton>
+                  <RadioButton fx:id="sortDescending" mnemonicParsing="false" text="Descending" toggleGroup="$order" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+                <VBox alignment="CENTER">
                     <children>
-                        <VBox prefHeight="400.0" prefWidth="344.0">
-                            <children>
-                                <HBox alignment="CENTER" prefHeight="260.0" prefWidth="640.0">
-                                    <children>
-                                        <VBox alignment="CENTER" prefHeight="163.0" prefWidth="342.0" HBox.hgrow="ALWAYS">
-                                            <children>
-                                                <Label text="Name">
-                                                    <font>
-                                                        <Font name="System Bold Italic" size="22.0" />
-                                                    </font>
-                                                </Label>
-                                                <TextField fx:id="sortForName" prefHeight="25.0" prefWidth="320.0" promptText="Enter name...">
-                                                    <VBox.margin>
-                                                        <Insets />
-                                                    </VBox.margin>
-                                                </TextField>
-                                            </children>
-                                            <HBox.margin>
-                                                <Insets />
-                                            </HBox.margin>
-                                        </VBox>
-                                        <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
-                                            <HBox.margin>
-                                                <Insets />
-                                            </HBox.margin>
-                                        </VBox>
-                                    </children>
-                                </HBox>
-                                <HBox prefHeight="261.0" prefWidth="640.0">
-                                    <children>
-                                        <VBox alignment="CENTER" prefHeight="165.0" prefWidth="318.0">
-                                            <children>
-                                                <Label text="Type">
-                                                    <font>
-                                                        <Font name="System Bold Italic" size="22.0" />
-                                                    </font>
-                                                </Label>
-                                                <ComboBox fx:id="sortForType" prefHeight="25.0" prefWidth="244.0" visibleRowCount="20" />
-                                            </children>
-                                        </VBox>
-                                    </children>
-                                </HBox>
-                                <HBox alignment="CENTER" prefHeight="168.0" prefWidth="640.0" spacing="20.0">
-                                    <children>
-                                        <Button fx:id="applyButton" mnemonicParsing="false" onAction="#applySorting" prefHeight="50.0" prefWidth="120.0" text="Apply">
-                                            <font>
-                                                <Font size="18.0" />
-                                            </font>
-                                        </Button>
-                                        <Button fx:id="quitButton" mnemonicParsing="false" onAction="#quitSorting" prefHeight="50.0" prefWidth="120.0" text="Quit">
-                                            <font>
-                                                <Font size="18.0" />
-                                            </font>
-                                        </Button>
-                                    </children>
-                                </HBox>
-                            </children>
-                        </VBox>
-                        <Separator orientation="VERTICAL" prefHeight="200.0" />
-                        <VBox alignment="CENTER" prefHeight="400.0" prefWidth="301.0">
-                            <children>
-                                <ListView fx:id="sortingListView" minWidth="200.0" prefHeight="402.0" prefWidth="299.0" />
-                            </children>
-                        </VBox>
+                        <Label text="Type">
+                            <font>
+                                <Font name="System Bold Italic" size="22.0" />
+                            </font>
+                        </Label>
+                        <ComboBox fx:id="sortForType" prefWidth="120.0" visibleRowCount="8" />
                     </children>
-                </HBox>
-            </children>
-        </AnchorPane>
+                </VBox>
+              <HBox alignment="CENTER">
+                  <children>
+                      <Button fx:id="applyButton" mnemonicParsing="false" onAction="#applySorting" prefHeight="50.0" prefWidth="120.0" text="Apply">
+                          <font>
+                              <Font size="18.0" />
+                          </font>
+                      </Button>
+                  </children>
+              </HBox>
     </children>
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
 </VBox>

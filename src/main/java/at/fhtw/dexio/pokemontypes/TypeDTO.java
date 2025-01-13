@@ -1,25 +1,32 @@
 package at.fhtw.dexio.pokemontypes;
 
+import java.util.List;
+
 public class TypeDTO {
     private DamageRelationsDTO damage_relations;
-    private GenerationTypeSpritesDTO sprites;
-    private String name;
     private Integer id;
+    private String name;
+    private List<PokemonSlotsDTO> pokemon;
+    private GenerationTypeSpritesDTO sprites;
 
     public DamageRelationsDTO getDamage_relations() {
         return damage_relations;
     }
 
-    public GenerationTypeSpritesDTO getSprites() {
-        return sprites;
+    public Integer getId() {
+        return id;
     }
 
     public String getName() {
         return name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
     }
 
-    public Integer getId() {
-        return id;
+    public List<PokemonSlotsDTO> getPokemon() {
+        return pokemon;
+    }
+
+    public GenerationTypeSpritesDTO getSprites() {
+        return sprites;
     }
 
     @Override
