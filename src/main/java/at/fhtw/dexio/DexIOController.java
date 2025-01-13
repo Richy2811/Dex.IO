@@ -625,11 +625,6 @@ public class DexIOController {
         //-------------------------------------------------------------------------------------------------
         //------------------------------------------Shiny Counter------------------------------------------
         //-------------------------------------------------------------------------------------------------
-        //hide shiny counter options by default
-        shinyOptPane.setVisible(false);
-        shinyOptPane.setPrefWidth(0);
-        shinyOptBtn.setText(">");
-
         //set date language to english
         Locale.setDefault(Locale.ENGLISH);
 
