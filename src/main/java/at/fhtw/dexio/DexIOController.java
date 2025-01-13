@@ -28,6 +28,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.time.LocalDate;
@@ -37,6 +38,10 @@ import java.util.stream.Collectors;
 
 
 public class DexIOController {
+    //Application fields
+    @FXML
+    private MenuItem quitMenu;
+
     //Pokédex fields
     private ObservableList<PokedexEntryDTO> pokedexEntries;
 
