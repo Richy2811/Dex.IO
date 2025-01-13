@@ -1,5 +1,10 @@
 package at.fhtw.dexio.pokedex;
 
+
+/**
+ * A Data Transfer Object (DTO) for exporting Pokémon data.
+ * Contains details such as name, image URL, types, and optional stats like HP.
+ */
 public class PokemonExportDTO {
     private String name;
     private String imageUrl;
