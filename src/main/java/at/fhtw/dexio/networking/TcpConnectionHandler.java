@@ -9,6 +9,10 @@ import javax.net.ssl.SSLSocketFactory;
 import java.io.*;
 import java.net.Socket;
 
+/**
+ * Establishes a connection with the given URL and returns the response
+ * body as a string.
+ */
 public class TcpConnectionHandler {
     public static String getFromUrl(String url){
         //split url into hostname and file path

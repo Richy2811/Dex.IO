@@ -12,6 +12,10 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
+/**
+ * A service which, when started with a valid URL set, will return an {@link ObservableList}
+ * of {@link PokedexEntryDTO} when the task is finished.
+ */
 public class PokedexService extends Service<ObservableList<PokedexEntryDTO>> {
     //json mapper for deserialisation of PokedexDTO object
     private final ObjectMapper jsonMapper = JsonMapper.builder()

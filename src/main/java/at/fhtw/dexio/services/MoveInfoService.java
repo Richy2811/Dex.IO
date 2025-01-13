@@ -1,7 +1,7 @@
 package at.fhtw.dexio.services;
 
 import at.fhtw.dexio.networking.TcpConnectionHandler;
-import at.fhtw.dexio.pokedex.PokemonSpeciesDTO;
+import at.fhtw.dexio.pokemonmoves.MoveDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,33 +11,31 @@ import javafx.concurrent.Task;
 
 /**
  * A service which, when started with a valid URL set, will return the
- * {@link PokemonSpeciesDTO} of the requested Pokémon species when the
- * task is finished.
+ * {@link MoveDTO} of the requested move when the task is finished.
  */
-public class PokemonSpeciesService extends Service<PokemonSpeciesDTO> {
-
-    //json mapper for deserialisation of PokemonSpeciesDTO object
+public class MoveInfoService extends Service<MoveDTO> {
+    //json mapper for deserialisation of MoveDTO object
     private final ObjectMapper jsonMapper = JsonMapper.builder()
             .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             .build();
 
-    private String pokemonSpeciesURL = null;
+    String moveURL;
 
-    public void setPokemonSpeciesURL(String pokemonURL) {
-        this.pokemonSpeciesURL = pokemonURL;
+    public void setMoveURL(String moveURL) {
+        this.moveURL = moveURL;
     }
 
-    public String getPokemonSpeciesURL() {
-        return pokemonSpeciesURL;
+    public String getMoveURL() {
+        return moveURL;
     }
 
     @Override
-    protected Task<PokemonSpeciesDTO> createTask() {
+    protected Task<MoveDTO> createTask() {
         return new Task<>() {
-            protected PokemonSpeciesDTO call() {
-                String pokemonSpeciesJsonString = TcpConnectionHandler.getFromUrl(pokemonSpeciesURL);
-                try{
-                    return jsonMapper.readValue(pokemonSpeciesJsonString, PokemonSpeciesDTO.class);
+            protected MoveDTO call() {
+                String moveJsonString = TcpConnectionHandler.getFromUrl(moveURL);
+                try {
+                    return jsonMapper.readValue(moveJsonString, MoveDTO.class);
                 }
                 catch (JsonProcessingException e){
                     return null;

@@ -1,5 +1,10 @@
 package at.fhtw.dexio.pokedex;
 
+/**
+ * Representation of the data structure which stores the name and
+ * URL of the Pokémon.
+ * @see PokedexDTO
+ */
 public class PokedexEntryDTO {
     private String name;
     private String url;
@@ -23,6 +28,6 @@ public class PokedexEntryDTO {
     @Override
     public String toString() {
         //list view uses toString() method to determine which text to display in cells
-        return name;
+        return getName();
     }
 }
