@@ -1,22 +1,23 @@
 package at.fhtw.dexio.sorting;
 
 import at.fhtw.dexio.pokedex.PokedexEntryDTO;
+import at.fhtw.dexio.pokemontypes.PokemonSlotsDTO;
+import at.fhtw.dexio.pokemontypes.TypeDTO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Controller class for the Sorting Menu.
- * Provides functionality to filter Pokemon by name and type, and update the displayed results dynamically.
+ * Provides functionality to filter Pokémon by name and type, and update the displayed results dynamically.
  */
 public class SortingController {
 
@@ -24,85 +25,88 @@ public class SortingController {
     private TextField sortForName; // TextField for filtering by name
 
     @FXML
-    private ComboBox<String> sortForType; // ComboBox for filtering by type
+    private ToggleGroup sortBy;
 
     @FXML
-    private ListView<SortingEntryDTO> sortingListView; // ListView to display Pokemon
+    private ToggleGroup order;
+
+    @FXML
+    private RadioButton sortByID;
+
+    @FXML
+    private RadioButton sortByName;
+
+    @FXML
+    private RadioButton sortAscending;
+
+    @FXML
+    private RadioButton sortDescending;
+
+    @FXML
+    private ComboBox<TypeDTO> sortForType; // ComboBox for filtering by type
 
     @FXML
     private Button applyButton; // Button to apply sorting
 
-    @FXML
-    private Button quitButton; // Button to quit the sorting menu
-
-    private ObservableList<PokedexEntryDTO> pokedexEntries = FXCollections.observableArrayList();
-    private ObservableList<SortingEntryDTO> sortingEntries = FXCollections.observableArrayList();
+    private ListView<PokedexEntryDTO> dexListView;
+    private List<PokedexEntryDTO> filterList;
+    private Map<String, TypeDTO> pokemonTypeMap;
 
     /**
-     * Initializes the SortingController.
-     * Adds listeners to the filter fields (name and type) to dynamically update the displayed entries.
+     * Sets the Pokémon entries to be used for sorting and filtering.
      */
-    @FXML
-    public void initialize() {
-        // Add listeners for filtering
-        sortForName.textProperty().addListener((observable, oldValue, newValue) -> applyFilters());
-        sortForType.valueProperty().addListener((observable, oldValue, newValue) -> applyFilters());
-    }
-
-    /**
-     * Sets the Pokemon entries to be used for sorting and filtering.
-     */
-    public void setSortingEntries(List<SortingEntryDTO> entries) {
+    public void setSortingEntries(ObservableList<PokedexEntryDTO> entries, Map<String, TypeDTO> typeMap, ListView<PokedexEntryDTO> dexListView) {
         // Fill the observable list
-        this.sortingEntries.setAll(entries);
+        filterList = FXCollections.observableList(entries);
 
         // Fill the type ComboBox
-        Set<String> uniqueTypes = new HashSet<>();
-        for (SortingEntryDTO entry : entries) {
-            if (entry.getTypes() != null) {
-                entry.getTypes().forEach(type -> uniqueTypes.add(type.getName()));
-            }
-        }
-        sortForType.setItems(FXCollections.observableArrayList(uniqueTypes));
+        sortForType.setItems(FXCollections.observableArrayList(typeMap.values()));
 
-        // Display all entries initially in the ListView
-        sortingListView.setItems(sortingEntries);
+        //create reference to type map
+        pokemonTypeMap = typeMap;
+
+        //create reference to Pokédex
+        this.dexListView = dexListView;
     }
 
     /**
-     * Applies filters to the Pokemon list based on the input in the name TextField and type ComboBox.
+     * Applies filters to the Pokémon list based on the input in the name TextField and type ComboBox.
+     * Sorts entries based on the selected options in ascending or descending order.
      * Updates the ListView with the filtered results.
      */
     private void applyFilters() {
         String nameFilter = sortForName.getText().toLowerCase();
-        String typeFilter = sortForType.getValue();
+        List<PokedexEntryDTO> filtered;
+        //check if type filter was selected
+        if(sortForType.getValue() != null) {
+            String typeFilter = sortForType.getValue().getName();
+            //gather all Pokémon of the chosen type and use this list to filter by name
+            List<PokedexEntryDTO> typeFilterList = pokemonTypeMap.get(typeFilter).getPokemon().stream().map(PokemonSlotsDTO::getPokemon).toList();
+            filtered = typeFilterList.stream().filter(entry -> entry.getName().toLowerCase().contains(nameFilter)).collect(Collectors.toList());
+        }
+        else{
+            //filter by name
+            filtered = filterList.stream().filter(entry -> entry.getName().toLowerCase().contains(nameFilter)).collect(Collectors.toList());
+        }
 
-        // Apply filtering logic
-        List<SortingEntryDTO> filteredList = sortingEntries.stream()
-                .filter(entry -> entry.getName().toLowerCase().contains(nameFilter)) // Name filter
-                .filter(entry -> {
-                    if (typeFilter == null || typeFilter.isEmpty()) {
-                        return true; // No type filter applied
-                    }
-                    return entry.getTypes() != null && entry.getTypes().stream()
-                            .anyMatch(type -> type.getName().equalsIgnoreCase(typeFilter));
-                }) // Type filter
-                .toList();
+        //apply sort
+        if(sortByName.isSelected()){
+            //use name to sort
+            filtered.sort(Comparator.comparing(PokedexEntryDTO::getName));
+        }
+        if(sortDescending.isSelected()){
+            //reverse list to get sorted entries in descending order
+            Collections.reverse(filtered);
+        }
 
-        // Update the ListView with the filtered results
-        sortingListView.setItems(FXCollections.observableArrayList(filteredList));
+        //update list view
+        dexListView.setItems(FXCollections.observableArrayList(filtered));
     }
-
 
     @FXML
     private void applySorting() {
         applyFilters(); // Call the filter logic
-    }
-
-    @FXML
-    private void quitSorting() {
-        Stage stage = (Stage) quitButton.getScene().getWindow();
+        Stage stage = (Stage) applyButton.getScene().getWindow();
         stage.close(); // Close the current window
     }
-
 }

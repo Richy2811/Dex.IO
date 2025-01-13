@@ -10,8 +10,6 @@ import at.fhtw.dexio.pokemontypes.TypeEntryDTO;
 import at.fhtw.dexio.services.*;
 import at.fhtw.dexio.fileio.FileIO;
 import at.fhtw.dexio.sorting.SortingController;
-import at.fhtw.dexio.sorting.SortingEntryDTO;
-import at.fhtw.dexio.sorting.SortingTypeDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,6 +39,9 @@ import java.util.stream.Collectors;
 public class DexIOController {
     //Pokédex fields
     private ObservableList<PokedexEntryDTO> pokedexEntries;
+
+    @FXML
+    private Button sortingButton;
 
     @FXML
     private ListView<PokedexEntryDTO> dexListView;
@@ -505,7 +506,6 @@ public class DexIOController {
     private final MovedexService moveEntryService = new MovedexService();
     private final MoveInfoService moveInfoService = new MoveInfoService();
     private final NatureService natureService =  new NatureService();
-    private final PokemonInfoService pokemonInfoService = new PokemonInfoService();
 
 
     //Placeholder sprite for loading images
@@ -517,6 +517,9 @@ public class DexIOController {
         //-------------------------------------------------------------------------------------------------
         //---------------------------------------------Pokédex---------------------------------------------
         //-------------------------------------------------------------------------------------------------
+        //disable sorting window until Pokémon types have finished loading
+        sortingButton.setDisable(true);
+
         //get Pokédex entries from the PokeAPI
         pokedexEntryService.setPokedexURL("https://pokeapi.co/api/v2/pokemon?limit=200");
         pokedexEntryService.restart();
@@ -543,6 +546,10 @@ public class DexIOController {
             //stop every service which may potentially run at the time
             dexPokemonInfoService.cancel();
             pokemonSpeciesService.cancel();
+
+            if(newPokemonEntry == null){
+                return;
+            }
 
             //clear any currently displayed information while the new one is loaded
             pokemonName.setText("...");
@@ -745,6 +752,7 @@ public class DexIOController {
         //set initial info
         updateShinyInfo();
 
+
         //-------------------------------------------------------------------------------------------------
         //------------------------------------------Team builder------------------------------------------
         //-------------------------------------------------------------------------------------------------
@@ -760,7 +768,6 @@ public class DexIOController {
         }
 
 
-
         //-------------------------------------------------------------------------------------------------
         //------------------------------------------Pokémon Types------------------------------------------
         //-------------------------------------------------------------------------------------------------
@@ -769,6 +776,9 @@ public class DexIOController {
             //fill type map and list (first type is a "None" type mapped to null)
             pokemonTypeMap = newTypeEntries;
             pokemonTypeList = new ArrayList<>(newTypeEntries.values());
+
+            //enable sorting button in Pokédex
+            sortingButton.setDisable(false);
 
             //fill type selection ComboBoxes
             primaryType.setItems(FXCollections.observableList(pokemonTypeList));
@@ -1412,12 +1422,7 @@ public class DexIOController {
 
             SortingController sortingController = loader.getController();
 
-            List<SortingEntryDTO> sortingEntries = pokedexEntries.stream()
-                    .map(entry -> new SortingEntryDTO(entry.getName(), List.of())) // Ignore types if not needed
-                    .toList();
-
-
-            sortingController.setSortingEntries(sortingEntries);
+            sortingController.setSortingEntries(pokedexEntries, pokemonTypeMap, dexListView);
 
             Stage popupStage = new Stage();
             popupStage.setTitle("Sorting Menu");

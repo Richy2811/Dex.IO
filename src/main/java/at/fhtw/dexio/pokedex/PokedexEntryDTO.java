@@ -23,6 +23,6 @@ public class PokedexEntryDTO {
     @Override
     public String toString() {
         //list view uses toString() method to determine which text to display in cells
-        return name;
+        return getName();
     }
 }
