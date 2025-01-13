@@ -59,8 +59,8 @@
                                  <children>
                                     <AnchorPane prefHeight="200.0" prefWidth="200.0">
                                        <children>
-                                          <ListView fx:id="dexListView" layoutX="-1.0" layoutY="61.0" minWidth="200.0" prefHeight="500.0" prefWidth="226.0" />
-                                          <Button fx:id="sortingButton" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#OpenSortingMenu" prefHeight="36.0" prefWidth="201.0" text="Sorting Options" />
+                                          <ListView fx:id="dexListView" layoutX="-1.0" layoutY="61.0" minWidth="200.0" prefWidth="226.0" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="70.0" />
+                                          <Button fx:id="sortingButton" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#OpenSortingMenu" prefHeight="36.0" prefWidth="201.0" text="Sorting Options" AnchorPane.topAnchor="15.0" />
                                        </children>
                                     </AnchorPane>
                                     <Separator orientation="VERTICAL" />
