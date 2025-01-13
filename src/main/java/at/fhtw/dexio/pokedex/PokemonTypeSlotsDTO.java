@@ -1,9 +1,11 @@
 package at.fhtw.dexio.pokedex;
 
-public class PokemonTypeSlotsDTO {
-    private PokemonTypeDTO type;
+import at.fhtw.dexio.pokemontypes.TypeEntryDTO;
 
-    public PokemonTypeDTO getType() {
+public class PokemonTypeSlotsDTO {
+    private TypeEntryDTO type;
+
+    public TypeEntryDTO getType() {
         return type;
     }
 }

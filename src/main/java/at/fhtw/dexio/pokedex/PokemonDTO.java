@@ -8,7 +8,7 @@ import java.util.List;
 public class PokemonDTO {
     private List<PokemonMoveDTO> moves;
     private String name;
-    private PokemonSpeciesUrlDTO species;
+    private PokemonSpeciesEntryDTO species;
     private PokemonSpriteDTO sprites;
     private List<PokemonStatDTO> stats;
     private List<PokemonTypeSlotsDTO> types;
@@ -21,7 +21,7 @@ public class PokemonDTO {
         return name.substring(0, 1).toUpperCase() + name.substring(1);
     }
 
-    public PokemonSpeciesUrlDTO getSpecies() {
+    public PokemonSpeciesEntryDTO getSpecies() {
         return species;
     }
 

@@ -1,6 +1,6 @@
 package at.fhtw.dexio.pokedex;
 
-public class PokemonSpeciesUrlDTO {
+public class PokemonSpeciesEntryDTO {
     private String url;
 
     public String getUrl() {

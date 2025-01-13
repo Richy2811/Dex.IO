@@ -1,6 +1,6 @@
 package at.fhtw.dexio.pokedex;
 
-public class PokedexFlavorTextLanguageDTO {
+public class LanguageEntryDTO {
     private String name;
 
     public String getName() {
