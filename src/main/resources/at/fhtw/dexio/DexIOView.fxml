@@ -36,12 +36,12 @@
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
-              <MenuItem mnemonicParsing="false" text="Close" fx:id="quitMenu" onAction="#quit" />
+              <MenuItem fx:id="quitMenu" mnemonicParsing="false" onAction="#quit" text="Close" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Help">
             <items>
-               <MenuItem mnemonicParsing="false" text="About" fx:id="openAbout" onAction="#openAboutWindow" />
+               <MenuItem fx:id="openAbout" mnemonicParsing="false" onAction="#openAboutWindow" text="About" />
 
             </items>
           </Menu>
@@ -643,9 +643,9 @@
                                                             </VBox>
                                                          </children>
                                                       </VBox>
-                                                      <VBox spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                      <VBox alignment="BOTTOM_CENTER" minHeight="160.0" spacing="5.0" AnchorPane.bottomAnchor="40.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <children>
-                                                            <ImageView fx:id="dmgCalcPokemon1Img" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" />
+                                                            <ImageView fx:id="dmgCalcPokemon1Img" fitHeight="100.0" fitWidth="100.0" nodeOrientation="RIGHT_TO_LEFT" pickOnBounds="true" preserveRatio="true" />
                                                             <ImageView fx:id="dmgCalcPokemon1Type1" fitHeight="20.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" />
                                                             <ImageView fx:id="dmgCalcPokemon1Type2" fitHeight="20.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" />
                                                          </children>
@@ -936,7 +936,7 @@
                                              <children>
                                                 <AnchorPane VBox.vgrow="ALWAYS">
                                                    <children>
-                                                      <VBox spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                      <VBox alignment="BOTTOM_CENTER" minHeight="160.0" spacing="5.0" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <children>
                                                             <ImageView fx:id="dmgCalcPokemon2Img" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" />
                                                             <ImageView fx:id="dmgCalcPokemon2Type1" fitHeight="20.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" />
@@ -976,7 +976,7 @@
                                                       </VBox>
                                                    </children>
                                                    <VBox.margin>
-                                                      <Insets bottom="40.0" />
+                                                      <Insets />
                                                    </VBox.margin>
                                                 </AnchorPane>
                                                 <TextFlow>
