@@ -38,9 +38,6 @@ Dex.IO ist eine JavaFX-basierte Anwendung, die Daten aus der Pokémon API ([Poke
 
 ---
 
-## Screenshots
-
----
 
 ## Geplante Features (Roadmap)
 - **Erweiterung der Exportdaten**:
