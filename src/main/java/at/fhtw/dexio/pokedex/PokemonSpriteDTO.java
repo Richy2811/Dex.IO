@@ -11,6 +11,7 @@ package at.fhtw.dexio.pokedex;
 public class PokemonSpriteDTO {
     private String front_default;
     private String front_shiny;
+    private OtherSpritesDTO other;
 
     public String getFront_default() {
         return front_default;
@@ -18,5 +19,9 @@ public class PokemonSpriteDTO {
 
     public String getFront_shiny() {
         return front_shiny;
+    }
+
+    public OtherSpritesDTO getOther() {
+        return other;
     }
 }
