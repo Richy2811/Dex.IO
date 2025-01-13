@@ -16,6 +16,28 @@ import javafx.scene.text.Text;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A service which, when provided with all parameters, will build a 2D
+ * {@link List} containing {@link Pane} elements, displaying type effectiveness
+ * in form of the type image and a multiplier next to it. The first index in the
+ * list describes the section in which this type with its multiplier is shown.
+ * <p>
+ * The sections appear in the list as followed:
+ * <ul>
+ *     <li>Type weaknesses</li>
+ *     <li>Type resistances</li>
+ *     <li>Type immunities</li>
+ *     <li>Neutral damage taken</li>
+ *     <li>Primary type dealing super effective damage</li>
+ *     <li>Primary type dealing not very effective damage</li>
+ *     <li>Primary type having no effect</li>
+ *     <li>Primary type dealing neutral damage</li>
+ *     <li>Secondary type dealing super effective damage</li>
+ *     <li>Secondary type dealing not very effective damage</li>
+ *     <li>Secondary type having no effect</li>
+ *     <li>Secondary type dealing neutral damage</li>
+ * </ul>
+ */
 public class TypeUIService extends Service<List<List<Pane>>> {
     private final List<List<Pane>> typeContainers = new ArrayList<>(12);
     private List<TypeDTO> pokemonTypeList;

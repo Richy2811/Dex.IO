@@ -1,5 +1,10 @@
 package at.fhtw.dexio.pokemonnatures;
 
+/**
+ * Representation of the data structure which stores the name and
+ * URL of the Pokémon nature.
+ * @see NatureDexDTO
+ */
 public class NatureEntryDTO {
     private String name;
     private String url;

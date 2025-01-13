@@ -8,6 +8,11 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 
 import java.util.concurrent.Callable;
 
+/**
+ * Callable class which is used for multithreading with {@link java.util.concurrent.FutureTask}
+ * inside the {@link at.fhtw.dexio.services.TypeAPIService} class.
+ * Returns the {@link TypeDTO} instance upon completion of task.
+ */
 public class ConcurrentTypeConnection implements Callable<TypeDTO> {
     //json mapper for deserialisation of TypeDTO object
     private final ObjectMapper jsonMapper = JsonMapper.builder()

@@ -2,6 +2,11 @@ package at.fhtw.dexio.pokemontypes;
 
 import java.util.List;
 
+/**
+ * Representation of the data structure which stores information about
+ * type effectiveness in lists, containing objects of {@link TypeEntryDTO}.
+ * @see TypeDTO
+ */
 public class DamageRelationsDTO {
     private List<TypeEntryDTO> double_damage_from;
     private List<TypeEntryDTO> double_damage_to;

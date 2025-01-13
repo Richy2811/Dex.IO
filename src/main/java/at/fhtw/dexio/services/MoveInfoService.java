@@ -9,6 +9,10 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
+/**
+ * A service which, when started with a valid URL set, will return the
+ * {@link MoveDTO} of the requested move when the task is finished.
+ */
 public class MoveInfoService extends Service<MoveDTO> {
     //json mapper for deserialisation of MoveDTO object
     private final ObjectMapper jsonMapper = JsonMapper.builder()

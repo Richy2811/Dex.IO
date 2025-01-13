@@ -8,6 +8,11 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 
 import java.util.concurrent.Callable;
 
+/**
+ * Callable class which is used for multithreading with {@link java.util.concurrent.FutureTask}
+ * inside the {@link at.fhtw.dexio.services.NatureService} class.
+ * Returns the {@link NatureDTO} instance upon completion of task.
+ */
 public class ConcurrentNatureConnection implements Callable<NatureDTO> {
     //json mapper for deserialisation of NatureDTO object
     private final ObjectMapper jsonMapper = JsonMapper.builder()

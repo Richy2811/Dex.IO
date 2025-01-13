@@ -15,6 +15,11 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
+/**
+ * A service which, when started with a valid URL set, will return a {@link Map}
+ * of {@link NatureDTO} when the task is finished, with the key value being the
+ * name of the nature.
+ */
 public class NatureService extends Service<Map<String, NatureDTO>> {
     //json mapper for deserialisation of nature DTO objects
     private final ObjectMapper jsonMapper = JsonMapper.builder()

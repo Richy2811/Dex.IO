@@ -9,6 +9,11 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
+/**
+ * A service which, when started with a valid URL set, will return the
+ * {@link PokemonSpeciesDTO} of the requested Pokémon species when the
+ * task is finished.
+ */
 public class PokemonSpeciesService extends Service<PokemonSpeciesDTO> {
 
     //json mapper for deserialisation of PokemonSpeciesDTO object

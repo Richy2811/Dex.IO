@@ -8,6 +8,9 @@ import at.fhtw.dexio.exceptions.HttpServerErrorException;
 import java.io.BufferedReader;
 import java.io.IOException;
 
+/**
+ * Reads the response of the http request and returns it as a string.
+ */
 public class HttpResponseHandler {
     public static String handleResponse(BufferedReader reader) throws IOException {
         //use StringBuilder to create string from server output

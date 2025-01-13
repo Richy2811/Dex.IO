@@ -18,6 +18,11 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
+/**
+ * A service which, when started with a valid URL set, will return a {@link Map}
+ * of {@link TypeDTO} when the task is finished, with the key value being the
+ * name of the type.
+ */
 public class TypeAPIService extends Service<Map<String, TypeDTO>> {
     //json mapper for deserialisation of TypeDexDTO object
     private final ObjectMapper jsonMapper = JsonMapper.builder()

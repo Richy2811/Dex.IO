@@ -1,5 +1,10 @@
 package at.fhtw.dexio.pokemontypes;
 
+/**
+ * Representation of the data structure which stores the name and
+ * URL of the Pokémon type.
+ * @see TypeDexDTO
+ */
 public class TypeEntryDTO {
     private String name;
     private String url;

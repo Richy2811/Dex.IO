@@ -1,5 +1,10 @@
 package at.fhtw.dexio.pokemonstats;
 
+/**
+ * Representation of the data structure which stores the name and
+ * URL of the Pokémon stat.
+ * @see StatDTO
+ */
 public class StatEntryDTO {
     private String name;
     private String url;

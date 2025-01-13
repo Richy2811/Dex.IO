@@ -2,6 +2,23 @@ package at.fhtw.dexio.pokemontypes;
 
 import java.util.List;
 
+/**
+ * Representation of the data structure which stores information on the Pokémon type.
+ * This includes its damage relations, id, name, Pokémon who are of the same type,
+ * sprites, etc. Only a subset of this data is used here.
+ * <p>
+ * This information is accessed through a request to the PokéAPI on the
+ * <a href="https://pokeapi.co/api/v2/type">Types</a> endpoint with the
+ * id or name appended to the path.
+ * <p>
+ * Examples:
+ * <ul>
+ *     <li>Normal: https://pokeapi.co/api/v2/type/1</li>
+ *     <li>Water: https://pokeapi.co/api/v2/type/water</li>
+ *     <li>Dragon: https://pokeapi.co/api/v2/type/16</li>
+ *     <li>Fairy: https://pokeapi.co/api/v2/type/fairy</li>
+ * </ul>
+ */
 public class TypeDTO {
     private DamageRelationsDTO damage_relations;
     private Integer id;

@@ -12,6 +12,10 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
+/**
+ * A service which, when started with a valid URL set, will return an {@link ObservableList}
+ * of {@link MoveEntryDTO} when the task is finished.
+ */
 public class MovedexService extends Service<ObservableList<MoveEntryDTO>> {
     //json mapper for deserialisation of MoveDexDTO object
     private final ObjectMapper jsonMapper = JsonMapper.builder()
