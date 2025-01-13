@@ -516,6 +516,8 @@ public class DexIOController {
     //Placeholder sprite for loading images
     private final Image placeHolderSprite = new Image(Objects.requireNonNull(DexIOController.class.getResource("images/Loading_Sprite.png")).toString(), true);
 
+    //Placeholder sprite if an image does not exist or could not be loaded
+    private final Image notFoundSprite = new Image(Objects.requireNonNull(DexIOController.class.getResource("images/Not_Found_Sprite.png")).toString(), true);
 
     @FXML
     public void initialize() {
@@ -589,7 +591,7 @@ public class DexIOController {
             }
 
             //show Pokémon sprite in information section
-            Image spriteImage = new Image(newPokemonInfo.getSprites().getOther().getOfficial_artwork().getFront_default());
+            Image spriteImage = getImage(newPokemonInfo.getSprites().getOther().getOfficial_artwork().getFront_default());
             pokemonImg.setImage(spriteImage);
 
             //check if Pokémon is already in team and change button text according to that
@@ -659,7 +661,7 @@ public class DexIOController {
                 return;
             }
 
-            Image shinySpriteImage = new Image(newPokemon.getSprites().getOther().getOfficial_artwork().getFront_shiny());
+            Image shinySpriteImage = getImage(newPokemon.getSprites().getOther().getOfficial_artwork().getFront_shiny());
             shinyTargetImage.setImage(shinySpriteImage);
         });
 
@@ -904,7 +906,7 @@ public class DexIOController {
             dmgCalcCurrentPokemon1 = newPokemon;
 
             //set Pokémon image
-            Image pokemon1SpriteImage = new Image(newPokemon.getSprites().getOther().getShowdown().getFront_default());
+            Image pokemon1SpriteImage = getImage(newPokemon.getSprites().getOther().getShowdown().getFront_default());
             dmgCalcPokemon1Img.setImage(pokemon1SpriteImage);
 
             //set type images for selected Pokémon
@@ -946,7 +948,7 @@ public class DexIOController {
             dmgCalcCurrentPokemon2 = newPokemon;
 
             //set Pokémon image
-            Image pokemon2SpriteImage = new Image(newPokemon.getSprites().getOther().getShowdown().getFront_default());
+            Image pokemon2SpriteImage = getImage(newPokemon.getSprites().getOther().getShowdown().getFront_default());
             dmgCalcPokemon2Img.setImage(pokemon2SpriteImage);
 
             //set type images for selected Pokémon
@@ -1172,6 +1174,18 @@ public class DexIOController {
         //start service for getting Pokémon natures
         natureService.setNatureDexURL("https://pokeapi.co/api/v2/nature?limit=100");
         natureService.restart();
+    }
+
+    private Image getImage(String imgURL){
+        //check if image exists
+        if(imgURL == null){
+            //return a "not found" image
+            return notFoundSprite;
+        }
+        else{
+            //load image from URL and return it
+            return new Image(imgURL);
+        }
     }
 
     @FXML
