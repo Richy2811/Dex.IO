@@ -528,7 +528,7 @@ public class DexIOController {
         sortingButton.setDisable(true);
 
         //get Pokédex entries from the PokeAPI
-        pokedexEntryService.setPokedexURL("https://pokeapi.co/api/v2/pokemon?limit=200");
+        pokedexEntryService.setPokedexURL("https://pokeapi.co/api/v2/pokemon?limit=10000");
         pokedexEntryService.restart();
 
         //add listener for when the Pokédex object has been loaded
