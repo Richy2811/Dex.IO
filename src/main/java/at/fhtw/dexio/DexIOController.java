@@ -58,10 +58,10 @@ public class DexIOController {
     private Label pokemonName;
 
     @FXML
-    private Label type1;
+    private ImageView type1;
 
     @FXML
-    private Label type2;
+    private ImageView type2;
 
     @FXML
     private Text pokedexFlavorText;
@@ -529,10 +529,6 @@ public class DexIOController {
         //disable sorting window until Pokémon types have finished loading
         sortingButton.setDisable(true);
 
-        //get Pokédex entries from the PokeAPI
-        pokedexEntryService.setPokedexURL("https://pokeapi.co/api/v2/pokemon?limit=10000");
-        pokedexEntryService.restart();
-
         //add listener for when the Pokédex object has been loaded
         pokedexEntryService.valueProperty().addListener((observable, oldEntries, newEntries) -> {
             //assign list of entries to field in controller class for later use
@@ -550,11 +546,19 @@ public class DexIOController {
             dmgCalcPokemon2Selector.setItems(dmgCalcPokemon2SelectFiltered);
         });
 
+        //get Pokédex entries from the PokeAPI
+        pokedexEntryService.setPokedexURL("https://pokeapi.co/api/v2/pokemon?limit=10000");
+        pokedexEntryService.restart();
+
         //add listener for image loading service
         dexImageService.valueProperty().addListener((observable, oldDexImage, newDexImage) -> pokemonImg.setImage(newDexImage));
 
         //add listener for selecting a Pokémon in the Pokédex tab
         dexListView.getSelectionModel().selectedItemProperty().addListener((observable, oldPokemonEntry, newPokemonEntry) -> {
+            if(newPokemonEntry == null){
+                return;
+            }
+
             //cancel current image load and reset it
             dexImageService.cancel();
             pokemonImg.setImage(null);
@@ -563,14 +567,10 @@ public class DexIOController {
             dexPokemonInfoService.cancel();
             pokemonSpeciesService.cancel();
 
-            if(newPokemonEntry == null){
-                return;
-            }
-
             //clear any currently displayed information while the new one is loaded
             pokemonName.setText("...");
-            type1.setText("...");
-            type2.setText("");
+            type1.setImage(null);
+            type2.setImage(null);
             pokemonImg.setImage(placeHolderSprite);
             pokedexFlavorText.setText("...");
 
@@ -593,10 +593,14 @@ public class DexIOController {
             //update Pokémon data in information section
             pokemonName.setText(newPokemonInfo.getName());
 
-            type1.setText(newPokemonInfo.getTypes().getFirst().getType().getName());
+            String type1Name = newPokemonInfo.getTypes().getFirst().getType().getName();
+            Image type1Image = new Image(pokemonTypeMap.get(type1Name).getSprites().getGeneration_ix_type_sprites().getScarlet_violet_type_sprite().getName_icon());
+            type1.setImage(type1Image);
             //show secondary type in case of dual typing
             if(newPokemonInfo.getTypes().size() == 2){
-                type2.setText(newPokemonInfo.getTypes().getLast().getType().getName());
+                String type2Name = newPokemonInfo.getTypes().getLast().getType().getName();
+                Image type2Image = new Image(pokemonTypeMap.get(type2Name).getSprites().getGeneration_ix_type_sprites().getScarlet_violet_type_sprite().getName_icon());
+                type2.setImage(type2Image);
             }
 
             //load Pokémon sprite in information section with image service due to higher image quality

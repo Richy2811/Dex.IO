@@ -71,7 +71,7 @@
                                                 <HBox VBox.vgrow="SOMETIMES">
                                                    <children>
                                                       <ImageView fx:id="pokemonImg" fitHeight="180.0" fitWidth="180.0" pickOnBounds="true" preserveRatio="true" />
-                                                      <VBox HBox.hgrow="ALWAYS">
+                                                      <VBox spacing="10.0" HBox.hgrow="ALWAYS">
                                                          <children>
                                                             <Label fx:id="pokemonName" minWidth="100.0">
                                                                <font>
@@ -81,27 +81,16 @@
                                                                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                                                </VBox.margin>
                                                             </Label>
-                                                            <Label fx:id="type1" minWidth="100.0">
-                                                               <font>
-                                                                  <Font size="20.0" />
-                                                               </font>
-                                                               <VBox.margin>
-                                                                  <Insets left="10.0" right="10.0" top="10.0" />
-                                                               </VBox.margin>
-                                                            </Label>
-                                                            <Label fx:id="type2" layoutX="20.0" layoutY="75.0" minWidth="100.0">
-                                                               <font>
-                                                                  <Font size="20.0" />
-                                                               </font>
-                                                               <VBox.margin>
-                                                                  <Insets left="10.0" right="10.0" />
-                                                               </VBox.margin>
-                                                            </Label>
+                                                            <ImageView fx:id="type1" fitHeight="30.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" />
+                                                            <ImageView fx:id="type2" fitHeight="30.0" fitWidth="150.0" layoutX="10.0" layoutY="66.0" pickOnBounds="true" preserveRatio="true" />
                                                          </children>
+                                                         <padding>
+                                                            <Insets left="10.0" />
+                                                         </padding>
                                                       </VBox>
                                                    </children>
                                                 </HBox>
-                                                <TextFlow textAlignment="JUSTIFY" VBox.vgrow="ALWAYS">
+                                                <TextFlow style="-fx-border-style: solid;" textAlignment="JUSTIFY" VBox.vgrow="ALWAYS">
                                                    <children>
                                                       <Text fx:id="pokedexFlavorText" strokeType="OUTSIDE" strokeWidth="0.0">
                                                          <font>
@@ -112,6 +101,9 @@
                                                    <VBox.margin>
                                                       <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                                    </VBox.margin>
+                                                   <padding>
+                                                      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                   </padding>
                                                 </TextFlow>
                                                 <AnchorPane prefHeight="61.0" prefWidth="300.0">
                                                    <children>
@@ -237,7 +229,7 @@
                                     <Separator orientation="VERTICAL" prefHeight="200.0" />
                                     <AnchorPane fx:id="shinyOptPane" minWidth="0.0">
                                        <children>
-                                          <VBox alignment="TOP_CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                          <VBox alignment="TOP_CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
                                              <children>
                                                 <TextFlow textAlignment="CENTER">
                                                    <children>
@@ -256,7 +248,7 @@
                                                       <Font size="17.0" />
                                                    </font>
                                                 </Label>
-                                                <ComboBox fx:id="shinyTargetSelector" editable="true" visibleRowCount="9">
+                                                <ComboBox fx:id="shinyTargetSelector" editable="true" maxWidth="1.7976931348623157E308" visibleRowCount="9">
                                                    <VBox.margin>
                                                       <Insets bottom="20.0" />
                                                    </VBox.margin></ComboBox>
@@ -265,7 +257,7 @@
                                                       <Font size="17.0" />
                                                    </font>
                                                 </Label>
-                                                <DatePicker fx:id="shinyStartDate" editable="false">
+                                                <DatePicker fx:id="shinyStartDate" editable="false" maxWidth="1.7976931348623157E308">
                                                    <VBox.margin>
                                                       <Insets bottom="20.0" />
                                                    </VBox.margin>
