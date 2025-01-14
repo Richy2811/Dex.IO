@@ -511,6 +511,8 @@ public class DexIOController {
     private final MovedexService moveEntryService = new MovedexService();
     private final MoveInfoService moveInfoService = new MoveInfoService();
     private final NatureService natureService =  new NatureService();
+    private final ImageService dexImageService = new ImageService();
+    private final ImageService shinyImageService = new ImageService();
 
 
     //Placeholder sprite for loading images
@@ -548,8 +550,15 @@ public class DexIOController {
             dmgCalcPokemon2Selector.setItems(dmgCalcPokemon2SelectFiltered);
         });
 
+        //add listener for image loading service
+        dexImageService.valueProperty().addListener((observable, oldDexImage, newDexImage) -> pokemonImg.setImage(newDexImage));
+
         //add listener for selecting a Pokémon in the Pokédex tab
         dexListView.getSelectionModel().selectedItemProperty().addListener((observable, oldPokemonEntry, newPokemonEntry) -> {
+            //cancel current image load and reset it
+            dexImageService.cancel();
+            pokemonImg.setImage(null);
+
             //stop every service which may potentially run at the time
             dexPokemonInfoService.cancel();
             pokemonSpeciesService.cancel();
@@ -590,9 +599,9 @@ public class DexIOController {
                 type2.setText(newPokemonInfo.getTypes().getLast().getType().getName());
             }
 
-            //show Pokémon sprite in information section
-            Image spriteImage = getImage(newPokemonInfo.getSprites().getOther().getOfficial_artwork().getFront_default());
-            pokemonImg.setImage(spriteImage);
+            //load Pokémon sprite in information section with image service due to higher image quality
+            dexImageService.setImgURL(newPokemonInfo.getSprites().getOther().getOfficial_artwork().getFront_default());
+            dexImageService.restart();
 
             //check if Pokémon is already in team and change button text according to that
             if (currentTeamSize >= 6) {
@@ -650,14 +659,18 @@ public class DexIOController {
         shinyCharmCheckbox.setSelected(false);
         shinyCharmCheckbox.setDisable(true);
 
+        //add listener for shiny image loading service
+        shinyImageService.valueProperty().addListener((observable, oldShinyImage, newShinyImage) -> shinyTargetImage.setImage(newShinyImage));
+
         //add listener for selection of a shiny Pokémon to show the sprite of
         shinyTrackerService.valueProperty().addListener((observable, oldPokemon, newPokemon) -> {
             if(newPokemon == null){
                 return;
             }
 
-            Image shinySpriteImage = getImage(newPokemon.getSprites().getOther().getOfficial_artwork().getFront_shiny());
-            shinyTargetImage.setImage(shinySpriteImage);
+            //load shiny Pokémon sprite image service due to higher image quality
+            shinyImageService.setImgURL(newPokemon.getSprites().getOther().getOfficial_artwork().getFront_shiny());
+            shinyImageService.restart();
         });
 
         //add listener for changes in the encounter textbox
@@ -703,8 +716,12 @@ public class DexIOController {
                 shinyTargetSelector.show();
             }
             else {
+                //cancel current image load
+                dexImageService.cancel();
+
                 //set placeholder image and clear text
                 shinyTargetImage.setImage(placeHolderSprite);
+
                 //start service for getting shiny sprite
                 shinyTrackerService.setPokemonInfoURL(selectedPokemon.getURL());
                 shinyTrackerService.restart();
